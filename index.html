@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Box Sports | Canlı Spor Yayını</title>
+
+<!-- hls.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #000;
+    color: #fff;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Sol kanal listesi */
+  #channel-list {
+    width: 280px;
+    background: #111;
+    border-right: 2px solid #ff2d2d;
+    overflow-y: auto;
+  }
+  #channel-list h2 {
+    margin: 15px;
+    font-weight: 700;
+    text-align: center;
+    color: #ff2d2d;
+    user-select: none;
+  }
+  .channel {
+    padding: 12px 15px;
+    border-bottom: 1px solid #222;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.25s;
+  }
+  .channel:hover, .channel.active {
+    background: #ff2d2d;
+    color: #000;
+  }
+  .channel img {
+    width: 40px;
+    height: 25px;
+    object-fit: contain;
+    border-radius: 3px;
+    user-select: none;
+  }
+  .channel .name {
+    font-weight: 600;
+    flex-grow: 1;
+  }
+
+  /* Sağdaki video player */
+  #player-container {
+    flex-grow: 1;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  video {
+    width: 90%;
+    max-width: 900px;
+    height: 500px;
+    background: #000;
+    border-radius: 8px;
+    outline: none;
+  }
+
+  /* Başlık üstte */
+  header {
+    width: 100%;
+    padding: 10px 0;
+    background: #1a1a1a;
+    color: #ff2d2d;
+    font-weight: 700;
+    font-size: 22px;
+    text-align: center;
+    user-select: none;
+  }
+
+  /* Responsive küçük ekran */
+  @media (max-width: 700px) {
+    body {
+      flex-direction: column;
+    }
+    #channel-list {
+      width: 100%;
+      height: 150px;
+      border-right: none;
+      border-bottom: 2px solid #ff2d2d;
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+    }
+    .channel {
+      flex: 0 0 auto;
+      padding: 10px 12px;
+      border-bottom: none;
+      border-right: 1px solid #222;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    #player-container {
+      flex-grow: unset;
+      height: calc(100vh - 150px - 40px);
+      display: block;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+    }
+  }
+</style>
+
+</head>
+<body>
+
+<header>Box Sports Canlı Spor Yayını</header>
+
+<div id="channel-list">
+  <h2>Kanallar</h2>
+  <!-- Kanallar JS ile eklenecek -->
+</div>
+
+<div id="player-container">
+  <video id="video" controls autoplay muted></video>
+</div>
+
+<script>
+  // Kanal listesi: isim, logo, M3U8 link
+  const channels = [
+    {
+      name: "Beşiktaş TV",
+      logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/6/64/Be%C5%9Fikta%C5%9F_JK_logo.svg/1200px-Be%C5%9Fikta%C5%9F_JK_logo.svg.png",
+      url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+    },
+    {
+      name: "Fenerbahçe TV",
+      logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/6/6c/Fenerbah%C3%A7e_S.K._logo.svg/1200px-Fenerbah%C3%A7e_S.K._logo.svg.png",
+      url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
+    },
+    {
+      name: "Galatasaray TV",
+      logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/7/7a/Galatasaray_S.K._logo.svg/1200px-Galatasaray_S.K._logo.svg.png",
+      url: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8"
+    },
+    {
+      name: "Trabzonspor TV",
+      logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/3/3a/Trabzonspor_logo.svg/1200px-Trabzonspor_logo.svg.png",
+      url: "https://moiptv.com:8081/live/trabzonspor.m3u8"
+    }
+  ];
+
+  const channelListEl = document.getElementById("channel-list");
+  const videoEl = document.getElementById("video");
+
+  function loadChannel(index) {
+    const channel = channels[index];
+    if (!channel) return;
+
+    // Aktif channel CSS güncelle
+    document.querySelectorAll(".channel").forEach((ch, i) => {
+      ch.classList.toggle("active", i === index);
+    });
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(channel.url);
+      hls.attachMedia(videoEl);
+      hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        videoEl.play();
+      });
+      // Önceki hls örneklerini temizlemek için:
+      if (videoEl._hls) {
+        videoEl._hls.destroy();
+      }
+      videoEl._hls = hls;
+    } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+      videoEl.src = channel.url;
+      videoEl.addEventListener('loadedmetadata', () => videoEl.play());
+    } else {
+      alert("Tarayıcınız HLS yayınını desteklemiyor.");
+    }
+  }
+
+  // Kanal listesini oluştur
+  channels.forEach((channel, i) => {
+    const chEl = document.createElement("div");
+    chEl.classList.add("channel");
+    chEl.innerHTML = `
+      <img src="${channel.logo}" alt="${channel.name}" />
+      <div class="name">${channel.name}</div>
+    `;
+    chEl.addEventListener("click", () => loadChannel(i));
+    channelListEl.appendChild(chEl);
+  });
+
+  // İlk kanalı otomatik yükle
+  loadChannel(0);
+</script>
+
+</body>
+</html>
