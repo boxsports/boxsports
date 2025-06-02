@@ -3,260 +3,223 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Box Sports | Canlı Spor Yayını</title>
+<title>Box Sports - Canlı Spor Kanalları</title>
 
-<!-- hls.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<!-- Video.js CSS -->
+<link href="https://vjs.zencdn.net/7.21.1/video-js.css" rel="stylesheet" />
 
 <style>
-  /* Temel reset */
-  * {
-    margin: 0; padding: 0; box-sizing: border-box;
-  }
   body {
+    margin: 0; padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    color: #e0eefe;
-    display: flex;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    display: flex; 
     height: 100vh;
     overflow: hidden;
   }
-
-  #channel-list {
+  #channelList {
     width: 300px;
-    background: rgba(20, 40, 70, 0.85);
-    border-right: 3px solid #4a90e2;
+    background: rgba(0,0,0,0.3);
     overflow-y: auto;
-    box-shadow: inset 0 0 10px #0009;
+    border-right: 1px solid rgba(255,255,255,0.1);
   }
-  #channel-list h2 {
-    padding: 20px;
-    font-size: 24px;
-    font-weight: 700;
-    color: #74b9ff;
-    user-select: none;
+  #channelList h2 {
+    padding: 15px;
+    margin: 0;
+    background: #144a8e;
     text-align: center;
-    border-bottom: 2px solid #4a90e2;
+    font-weight: 700;
+    letter-spacing: 1.5px;
   }
-  .channel {
-    display: flex;
-    align-items: center;
-    padding: 14px 18px;
-    border-bottom: 1px solid #357abd33;
+  #channels {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  #channels li {
+    padding: 12px 15px;
     cursor: pointer;
-    transition: background 0.3s, color 0.3s;
-    gap: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    transition: background-color 0.2s ease;
   }
-  .channel:hover, .channel.active {
-    background: #4a90e2;
-    color: #003366;
-    font-weight: 600;
-    border-radius: 5px 0 0 5px;
+  #channels li:hover, #channels li.active {
+    background: #0a1f44;
   }
-  .channel img {
-    width: 50px;
-    height: 30px;
-    object-fit: contain;
-    border-radius: 4px;
-    user-select: none;
-    filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.5));
-  }
-  .channel .name {
+  #playerContainer {
     flex-grow: 1;
-    font-size: 18px;
-  }
-
-  #player-container {
-    flex-grow: 1;
-    background: #001f3f;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    flex-direction: column;
+    background: #0f2349;
   }
-
+  #playerTitle {
+    padding: 15px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: #144a8e;
+    text-align: center;
+  }
   video {
-    width: 90%;
-    max-width: 900px;
-    height: 520px;
-    border-radius: 12px;
-    box-shadow: 0 0 25px #4a90e2cc;
-    outline: none;
+    flex-grow: 1;
+    width: 100%;
     background: black;
   }
 
-  header {
+  /* Scrollbar */
+  #channelList::-webkit-scrollbar {
+    width: 8px;
+  }
+  #channelList::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.2);
+  }
+  #channelList::-webkit-scrollbar-thumb {
+    background-color: #2a5298;
+    border-radius: 10px;
+  }
+
+  /* F12 & sağ click engelleme uyarısı */
+  #warning {
     position: fixed;
-    top: 0; left: 0; right: 0;
-    height: 50px;
-    background: #0f2a50;
-    color: #74b9ff;
-    font-size: 24px;
+    top: 10px;
+    right: 10px;
+    background: #ff5555aa;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
     font-weight: 700;
-    line-height: 50px;
-    text-align: center;
     user-select: none;
-    z-index: 100;
-    box-shadow: 0 2px 6px #000a;
-  }
-
-  /* Kanal listesi sabit, header altına yerleşsin */
-  #channel-list {
-    margin-top: 50px;
-    height: calc(100vh - 50px);
-  }
-  #player-container {
-    margin-top: 50px;
-    height: calc(100vh - 50px);
-  }
-
-  /* Responsive */
-  @media (max-width: 700px) {
-    body {
-      flex-direction: column;
-    }
-    #channel-list {
-      width: 100%;
-      height: 120px;
-      border-right: none;
-      border-bottom: 3px solid #4a90e2;
-      display: flex;
-      overflow-x: auto;
-      overflow-y: hidden;
-      white-space: nowrap;
-      margin-top: 50px;
-    }
-    .channel {
-      flex: 0 0 auto;
-      border-bottom: none;
-      border-right: 1px solid #357abd55;
-      flex-direction: column;
-      padding: 10px 12px;
-      gap: 8px;
-      border-radius: 0;
-    }
-    #player-container {
-      height: calc(100vh - 50px - 120px);
-      margin-top: 0;
-      padding: 10px;
-    }
-    video {
-      width: 100%;
-      height: 100%;
-      border-radius: 0;
-      box-shadow: none;
-    }
+    z-index: 9999;
   }
 </style>
-
 </head>
 <body>
 
-<header>Box Sports | Canlı Spor Yayını</header>
+<div id="warning">F12 ve Sağ Tık Engellendi</div>
 
-<div id="channel-list">
-  <h2>Kanallar</h2>
+<div id="channelList">
+  <h2>Box Sports Kanalları</h2>
+  <ul id="channels">
+    <li>Yükleniyor...</li>
+  </ul>
 </div>
 
-<div id="player-container">
-  <video id="video" controls autoplay muted></video>
+<div id="playerContainer">
+  <div id="playerTitle">Lütfen bir kanal seçin</div>
+  <video
+    id="videoPlayer"
+    class="video-js vjs-default-skin"
+    controls
+    preload="auto"
+    width="100%"
+    height="100%"
+    playsinline
+  ></video>
 </div>
+
+<!-- Video.js -->
+<script src="https://vjs.zencdn.net/7.21.1/video.min.js"></script>
+<!-- hls.js -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <script>
-  // Kanal listesi
-  const channels = [
-    {
-      name: "İstekbet Zirve",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Transparent_square.svg/1200px-Transparent_square.svg.png",
-      url: "https://lll.istekbet3.tv/yayinzirve.m3u8"
-    },
-    {
-      name: "Beşiktaş TV",
-      logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/6/64/Be%C5%9Fikta%C5%9F_JK_logo.svg/1200px-Be%C5%9Fikta%C5%9F_JK_logo.svg.png",
-      url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
-    },
-    {
-      name: "Fenerbahçe TV",
-      logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/6/6c/Fenerbah%C3%A7e_S.K._logo.svg/1200px-Fenerbah%C3%A7e_S.K._logo.svg.png",
-      url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
+  // Basit F12 ve sağ tıklama engelleme
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if (
+      e.key === 'F12' ||
+      (e.ctrlKey && e.shiftKey && ['I', 'C', 'J'].includes(e.key.toUpperCase())) ||
+      (e.ctrlKey && e.key.toUpperCase() === 'U')
+    ) {
+      e.preventDefault();
+      alert('Bu işlem engellendi.');
     }
-  ];
+  });
 
-  const channelListEl = document.getElementById("channel-list");
-  const videoEl = document.getElementById("video");
+  const proxyUrl = "https://gitlatte-a.hf.space/proxy?url=https://zekonew.newkso.ru/zeko/premium63/mono.m3u8";
+  const channelsUl = document.getElementById('channels');
+  const playerTitle = document.getElementById('playerTitle');
+  const video = document.getElementById('videoPlayer');
 
-  // Basit CORS proxy örneği (her zaman güvenilir değil, kendin kurmalısın!)
-  // Burada linki proxy ile çağırıyoruz. Proxy, sunucu tarafında referer engelini de kaldırabilir.
-  // Örneğin: https://corsproxy.io/?https://lll.istekbet3.tv/yayinzirve.m3u8
-  const proxy = "https://corsproxy.io/?";
+  let player = null;
 
-  function loadChannel(index) {
-    const channel = channels[index];
-    if (!channel) return;
+  // Video.js player init
+  function initPlayer(url) {
+    if(player) {
+      player.dispose();
+      player = null;
+    }
 
-    // Aktif kanal seçimi
-    document.querySelectorAll(".channel").forEach((ch, i) => {
-      ch.classList.toggle("active", i === index);
+    player = videojs('videoPlayer', {
+      autoplay: true,
+      controls: true,
+      fluid: true,
+      preload: 'auto',
+      techOrder: ['html5']
     });
 
-    const url = proxy + encodeURIComponent(channel.url);
-
-    if (Hls.isSupported()) {
-      if (videoEl._hls) {
-        videoEl._hls.destroy();
-        videoEl._hls = null;
-      }
+    if(Hls.isSupported()) {
       const hls = new Hls({
-        // Debug false, güvenlik için
-        debug: false,
-        xhrSetup: function(xhr, url) {
-          // Referer header frontend'de değiştirilemiyor, proxy sunucu tarafında ayarlanmalı
-          xhr.withCredentials = false;
+        xhrSetup: (xhr) => {
+          // Gerekirse referer ve header ayarları eklenebilir
+          xhr.setRequestHeader('Referer', 'https://zekonew.newkso.ru');
+          // Diğer headerlar eklenebilir
         }
       });
       hls.loadSource(url);
-      hls.attachMedia(videoEl);
-      hls.on(Hls.Events.MANIFEST_PARSED, function() {
-        videoEl.play();
+      hls.attachMedia(video);
+      hls.on(Hls.Events.ERROR, function(event, data) {
+        console.error('HLS.js error:', data);
       });
-      videoEl._hls = hls;
-    } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
-      videoEl.src = url;
-      videoEl.addEventListener('loadedmetadata', () => videoEl.play());
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = url;
     } else {
-      alert("Tarayıcınız HLS yayınını desteklemiyor.");
+      alert("Tarayıcınız HLS oynatmayı desteklemiyor.");
     }
   }
 
-  // Kanal listesini oluştur
-  channels.forEach((channel, i) => {
-    const chEl = document.createElement("div");
-    chEl.classList.add("channel");
-    chEl.innerHTML = `
-      <img src="${channel.logo}" alt="${channel.name}" />
-      <div class="name">${channel.name}</div>
-    `;
-    chEl.addEventListener("click", () => loadChannel(i));
-    channelListEl.appendChild(chEl);
-  });
+  // M3U8 dosyasını çekip kanal listesini parse et
+  fetch(proxyUrl)
+    .then(res => res.text())
+    .then(text => {
+      const lines = text.split(/\r?\n/);
+      let channels = [];
+      for(let i=0; i < lines.length; i++) {
+        if(lines[i].startsWith("#EXTINF")) {
+          const name = lines[i].split(",").pop().trim();
+          const url = lines[i+1] ? lines[i+1].trim() : "";
+          channels.push({name, url});
+          i++; // URL satırı atla
+        }
+      }
+      if(channels.length === 0) {
+        channelsUl.innerHTML = '<li>Kanallar bulunamadı.</li>';
+        return;
+      }
+      // Listeyi temizle
+      channelsUl.innerHTML = '';
+      channels.forEach((ch, idx) => {
+        const li = document.createElement('li');
+        li.textContent = ch.name;
+        li.title = ch.url;
+        li.dataset.url = ch.url;
+        if(idx === 0) li.classList.add('active');
+        li.addEventListener('click', () => {
+          document.querySelectorAll('#channels li').forEach(el => el.classList.remove('active'));
+          li.classList.add('active');
+          playerTitle.textContent = ch.name;
+          initPlayer(ch.url);
+        });
+        channelsUl.appendChild(li);
+      });
 
-  // İlk kanalı otomatik yükle
-  loadChannel(0);
-
-  // Sağ tık ve geliştirici araçları engelle
-  document.addEventListener('contextmenu', event => event.preventDefault());
-
-  document.addEventListener('keydown', (e) => {
-    // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
-    if (
-      e.key === 'F12' ||
-      (e.ctrlKey && e.shiftKey && (e.key.toLowerCase() === 'i' || e.key.toLowerCase() === 'j')) ||
-      (e.ctrlKey && e.key.toLowerCase() === 'u')
-    ) {
-      e.preventDefault();
-      alert('Bu işlem engellendi!');
-    }
-  });
+      // İlk kanalı otomatik oynat
+      playerTitle.textContent = channels[0].name;
+      initPlayer(channels[0].url);
+    })
+    .catch(err => {
+      console.error(err);
+      channelsUl.innerHTML = '<li>Kanallar yüklenirken hata oluştu.</li>';
+    });
 </script>
 
 </body>
