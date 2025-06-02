@@ -1,8 +1,8 @@
 
 const channels = [
-  { name: "BEIN SPORTS 1", url: "https://lll.istekbet3.tv/yayinzirve.m3u8" },
-  { name: "BEIN SPORTS 2", url: "https://example.com/bein2.m3u8" },
-  { name: "BEIN SPORTS 3", url: "https://example.com/bein3.m3u8" },
+  { name: "BEIN SPORTS 1", url: "https://gitlatte-a.hf.space/proxy?url=https://zekonew.newkso.ru/zeko/premium62/mono.m3u8" },
+  { name: "BEIN SPORTS 2", url: "https://gitlatte-a.hf.space/proxy?url=https://zekonew.newkso.ru/zeko/premium63/mono.m3u8" },
+  { name: "BEIN SPORTS 3", url: "https://gitlatte-a.hf.space/proxy?url=https://zekonew.newkso.ru/zeko/premium64/mono.m3u8" },
   { name: "S SPORT", url: "https://example.com/ssport.m3u8" },
   { name: "TRT SPOR", url: "https://example.com/trtspor.m3u8" },
 ];
