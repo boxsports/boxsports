@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BOX SPORTS</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>📺 BOX SPORTS</h1>
+  </header>
+  
+  <main class="container">
+    <aside class="sidebar">
+      <input type="text" id="search" placeholder="Kanallarda ara..." />
+      <ul id="channelList">
+        <!-- JS ile doldurulacak -->
+      </ul>
+    </aside>
+
+    <section class="player">
+      <video id="videoPlayer" controls autoplay muted></video>
+    </section>
+  </main>
+
+  <footer>
+    BOX SPORTS © 2025 - Tüm Hakları Saklıdır.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="script.js"></script>
+</body>
+</html>
