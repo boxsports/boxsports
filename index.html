@@ -2,34 +2,88 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BOX SPORTS</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bayram Baba TV</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      background: linear-gradient(to bottom, #a3cfff, #ffffff);
+      overflow-x: hidden;
+    }
+    #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+    }
+    #logo h1 {
+      font-size: 2em;
+      color: #007acc;
+      margin: 0;
+    }
+    #menu {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .channel-btn {
+      background-color: #007acc;
+      color: white;
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .channel-btn:hover {
+      background-color: #005fa3;
+    }
+    iframe {
+      width: 100%;
+      height: 60vh;
+      border: none;
+      margin-top: 20px;
+      border-radius: 10px;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>📺 BOX SPORTS</h1>
-  </header>
-  
-  <main class="container">
-    <aside class="sidebar">
-      <input type="text" id="search" placeholder="Kanallarda ara..." />
-      <ul id="channelList">
-        <!-- JS ile doldurulacak -->
-      </ul>
-    </aside>
-
-    <section class="player">
-      <video id="videoPlayer" controls autoplay muted></video>
-    </section>
-  </main>
-
-  <footer>
-    BOX SPORTS © 2025 - Tüm Hakları Saklıdır.
-  </footer>
+  <div id="container">
+    <div id="logo"><h1>BOX SPORTS</h1></div>
+    <div id="menu">
+      <button class="channel-btn" onclick="playM3U('https://gitlatte-a.hf.space/proxy?url=https://zekonew.newkso.ru/zeko/premium62/mono.m3u8')">Bein Sports 1</button>
+      <button class="channel-btn" onclick="playM3U('https://gitlatte-a.hf.space/proxy?url=https://zekonew.newkso.ru/zeko/premium63/mono.m3u8')">Bein Sports 2</button>
+      <button class="channel-btn" onclick="playM3U('https://gitlatte-a.hf.space/proxy?url=https://zekonew.newkso.ru/zeko/premium64/mono.m3u8')">S Sport</button>
+    </div>
+    <iframe id="player" allowfullscreen></iframe>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <script src="script.js"></script>
+  <script>
+    function playM3U(url) {
+      const videoFrame = document.getElementById('player');
+      videoFrame.src = "player.html?stream=" + encodeURIComponent(url);
+    }
+
+    // Sağ tık ve F12 engelleme
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C','U'].includes(e.key.toUpperCase()))) {
+        e.preventDefault();
+        alert("Bu işlem güvenlik nedeniyle engellendi!");
+        return false;
+      }
+    });
+  </script>
 </body>
 </html>
