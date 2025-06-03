@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "name": "BEIN SPORTS 1",
+    "url": "proxy.php?url=https://lll.istekbet3.tv/yayinzirve.m3u8",
+    "category": "Spor",
+    "live": true
+  },
+  {
+    "id": 2,
+    "name": "BEIN SPORTS 2",
+    "url": "proxy.php?url=https://example.com/stream2.m3u8",
+    "category": "Spor",
+    "live": true
+  }
+]
