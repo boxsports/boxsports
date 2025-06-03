@@ -1,130 +1,509 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>BOX SPORTS</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" type="image/png" />
+
+  <!-- HLS.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    :root {
+      --color-bg-light: #e6f7ff;
+      --color-bg-dark: #001f3f;
+      --color-primary-light: #0099ff;
+      --color-primary-dark: #3399ff;
+      --color-text-light: #0a2540;
+      --color-text-dark: #cce6ff;
+      --color-status: #28a745;
+      --color-white: #fff;
+    }
+
+    [data-theme="light"] {
+      --bg: var(--color-bg-light);
+      --text: var(--color-text-light);
+      --primary: var(--color-primary-light);
+      --status: var(--color-status);
+      --white: var(--color-white);
+    }
+
+    [data-theme="dark"] {
+      --bg: var(--color-bg-dark);
+      --text: var(--color-text-dark);
+      --primary: var(--color-primary-dark);
+      --status: var(--color-status);
+      --white: var(--color-white);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom right, #cceaff, #e6f7ff);
-      color: #003366;
+      font-family: 'Inter', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     header {
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 1.5rem;
+      font-size: 1.75rem;
+      font-weight: 700;
       text-align: center;
-      font-size: 24px;
-      font-weight: bold;
-      padding: 20px;
-      background-color: #0077cc;
-      color: white;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+      user-select: none;
+      position: relative;
+    }
+
+    /* Logo */
+    header img {
+      height: 36px;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+      filter: drop-shadow(0 0 1px rgba(0,0,0,0.2));
+      cursor: pointer;
+      vertical-align: middle;
     }
 
     .container {
+      flex: 1;
       display: flex;
-      padding: 20px;
-      gap: 20px;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      max-width: 1200px;
+      margin: auto;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .channel-list {
-      width: 25%;
-      background-color: white;
-      border-radius: 12px;
-      padding: 15px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      height: 500px;
-      overflow-y: auto;
+      background-color: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
-    .channel-list input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
+    .channel-list input,
+    .channel-list select {
+      border: none;
+      border-bottom: 2px solid var(--primary);
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+      background: #fff;
+      color: #000;
+    }
+    .channel-list input:focus,
+    .channel-list select:focus {
+      border-color: #0066cc;
+    }
+
+    #channelContainer {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.5rem 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary) #e0e0e0;
+    }
+    #channelContainer::-webkit-scrollbar {
+      width: 8px;
+    }
+    #channelContainer::-webkit-scrollbar-thumb {
+      background-color: var(--primary);
+      border-radius: 10px;
+    }
+    #channelContainer::-webkit-scrollbar-track {
+      background: #e0e0e0;
+      border-radius: 10px;
     }
 
     .channel {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px;
-      border-bottom: 1px solid #eee;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid #f0f4f8;
+      font-weight: 600;
+      color: #004a99;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    .channel:last-child {
+      border-bottom: none;
+    }
+    .channel:hover {
+      background-color: #e6f4ff;
     }
 
-    .channel:hover {
-      background-color: #f0f8ff;
+    .channel.active {
+      background-color: var(--primary);
+      color: var(--white);
+      font-weight: 700;
+      box-shadow: 0 0 12px #3399ffaa;
     }
 
     .status {
-      color: #00cc66;
-      font-weight: bold;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--status);
+      user-select: none;
+      white-space: nowrap;
     }
 
     .video-player {
       flex: 1;
-      background-color: #000;
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      background: black;
+      position: relative;
+      min-height: 360px;
     }
 
-    iframe, video {
+    #video {
       width: 100%;
       height: 100%;
-      border: none;
+      background: black;
+      outline: none;
     }
 
     footer {
       text-align: center;
-      padding: 15px;
-      font-size: 14px;
-      color: #003366;
-      background-color: #e6f7ff;
+      padding: 1rem;
+      font-size: 0.9rem;
+      background: var(--bg);
+      color: var(--text);
+      user-select: none;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
     }
+
+    /* Tema seçici butonu */
+    .theme-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--white);
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      width: 42px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: background 0.3s ease;
+    }
+
+    .theme-toggle:focus {
+      outline: 2px solid var(--primary);
+    }
+
+    .theme-toggle .circle {
+      background: var(--primary);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+      transform: translateX(0);
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      background: #003366;
+    }
+
+    [data-theme="dark"] .theme-toggle .circle {
+      background: #66ccff;
+      transform: translateX(18px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding: 1rem;
+      }
+
+      .channel-list {
+        width: 100%;
+        height: 280px;
+        margin-bottom: 1rem;
+      }
+
+      .video-player {
+        min-height: 240px;
+        border-radius: 12px;
+      }
+    }
+
+    /* Canlı skorlar paneli */
+    .live-scores {
+      background-color: var(--white);
+      color: var(--text);
+      padding: 1rem;
+      border-radius: 16px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+      max-width: 1200px;
+      margin: 1rem auto;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+
+    .live-scores h2 {
+      margin-top: 0;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .score-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+    }
+    .score-item:last-child {
+      border-bottom: none;
+    }
+
+    .team {
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .score {
+      font-weight: 700;
+      width: 40px;
+      text-align: center;
+    }
+
+    .match-time {
+      color: #888;
+      width: 80px;
+      text-align: right;
+      font-size: 0.9rem;
+    }
+
   </style>
 </head>
-<body>
+<body data-theme="light">
 
-  <header>BOX SPORTS</header>
+  <header>
+    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="BOX SPORTS Logo" title="BOX SPORTS" />
+    BOX SPORTS
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <div class="circle"></div>
+    </button>
+  </header>
 
   <div class="container">
-    <div class="channel-list">
-      <input type="text" placeholder="Kanallarda Ara..." id="searchInput" onkeyup="searchChannels()"/>
-      <div id="channelContainer">
-        <div class="channel" onclick="playChannel('https://lll.istekbet3.tv/yayinzirve.m3u8')">BEIN SPORTS 1 <span class="status">● Canlı</span></div>
-        <div class="channel" onclick="playChannel('https://example.com/stream2')">BEIN SPORTS 2 <span class="status">● Canlı</span></div>
-        <div class="channel" onclick="playChannel('https://example.com/stream3')">BEIN SPORTS 3 <span class="status">● Canlı</span></div>
-        <div class="channel" onclick="playChannel('https://example.com/stream4')">BEIN SPORTS 4 <span class="status">● Canlı</span></div>
-        <div class="channel" onclick="playChannel('https://example.com/stream5')">BEIN SPORTS 5 <span class="status">● Canlı</span></div>
-        <div class="channel" onclick="playChannel('https://example.com/stream6')">BEIN SPORTS MAX 1 <span class="status">● Canlı</span></div>
-        <div class="channel" onclick="playChannel('https://example.com/stream7')">BEIN SPORTS MAX 2 <span class="status">● Canlı</span></div>
-        <div class="channel" onclick="playChannel('https://example.com/stream8')">S SPORT <span class="status">● Canlı</span></div>
+    <div class="channel-list" role="region" aria-label="Kanal Listesi">
+      <input type="text" placeholder="Kanallarda Ara..." id="searchInput" aria-label="Kanallarda Ara" onkeyup="filterChannels()" />
+      <select id="categoryFilter" aria-label="Kategoriye göre filtrele" onchange="filterChannels()">
+        <option value="">Tüm Kategoriler</option>
+      </select>
+      <div id="channelContainer" role="list" aria-label="Kanallar">
+        <!-- Kanallar JS ile buraya yüklenecek -->
       </div>
     </div>
 
-    <div class="video-player">
-      <iframe id="videoFrame" src="https://example.com/stream1" allowfullscreen></iframe>
+    <div class="video-player" aria-label="Video Oynatıcı">
+      <video id="video" controls crossorigin playsinline></video>
     </div>
   </div>
+
+  <section class="live-scores" aria-live="polite" aria-label="Canlı Skorlar">
+    <h2>Canlı Skorlar</h2>
+    <div id="scoresContainer">
+      <!-- Skorlar JS ile yüklenecek -->
+    </div>
+  </section>
 
   <footer>BOX SPORTS tarafından desteklenmektedir.</footer>
 
   <script>
-    function playChannel(url) {
-      document.getElementById('videoFrame').src = url;
+    // Tema seçici
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    themeToggle.addEventListener('click', () => {
+      if(body.getAttribute('data-theme') === 'light'){
+        body.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        body.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+
+    // Önce kaydedilmiş tema varsa uygula
+    const savedTheme = localStorage.getItem('theme');
+    if(savedTheme) {
+      body.setAttribute('data-theme', savedTheme);
     }
 
-    function searchChannels() {
-      const input = document.getElementById("searchInput").value.toLowerCase();
-      const channels = document.querySelectorAll(".channel");
-      channels.forEach(channel => {
-        const name = channel.textContent.toLowerCase();
-        channel.style.display = name.includes(input) ? "flex" : "none";
+    // Kanal verisi (normalde API'den fetch yapabilirsin)
+    const channels = [
+      { id: 1, name: "BEIN SPORTS 1", url: "https://lll.istekbet3.tv/yayinzirve.m3u8", category: "Spor", live: true },
+      { id: 2, name: "BEIN SPORTS 2", url: "https://example.com/stream2.m3u8", category: "Spor", live: true },
+      { id: 3, name: "BEIN SPORTS 3", url: "https://example.com/stream3.m3u8", category: "Spor", live: true },
+      { id: 4, name: "BEIN SPORTS 4", url: "https://example.com/stream4.m3u8", category: "Spor", live: true },
+      { id: 5, name: "BEIN SPORTS 5", url: "https://example.com/stream5.m3u8", category: "Spor", live: true },
+      { id: 6, name: "BEIN SPORTS MAX 1", url: "https://example.com/stream6.m3u8", category: "Premium", live: true },
+      { id: 7, name: "BEIN SPORTS MAX 2", url: "https://example.com/stream7.m3u8", category: "Premium", live: true },
+      { id: 8, name: "S SPORT", url: "https://example.com/stream8.m3u8", category: "Spor", live: true },
+      { id: 9, name: "EuroLeague TV", url: "https://example.com/stream9.m3u8", category: "Basketbol", live: false },
+      { id: 10, name: "Formula 1 TV", url: "https://example.com/stream10.m3u8", category: "Motor Sporları", live: false },
+    ];
+
+    // Canlı skor örnek verisi
+    const liveScores = [
+      { id: 1, team1: "Fenerbahçe", score1: 2, team2: "Galatasaray", score2: 1, time: "75'" },
+      { id: 2, team1: "Real Madrid", score1: 0, team2: "Barcelona", score2: 0, time: "45'" },
+      { id: 3, team1: "NBA Lakers", score1: 98, team2: "NBA Celtics", score2: 102, time: "4:35 4.Çeyrek" }
+    ];
+
+    // Element referansları
+    const channelContainer = document.getElementById('channelContainer');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const video = document.getElementById('video');
+    const searchInput = document.getElementById('searchInput');
+    const scoresContainer = document.getElementById('scoresContainer');
+
+    // Kategorileri yükle ve filtre dropdowna ekle
+    function loadCategories() {
+      const categories = [...new Set(channels.map(c => c.category))];
+      categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        categoryFilter.appendChild(option);
       });
     }
+
+    // Kanalları filtrele ve listele
+    function filterChannels() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const selectedCategory = categoryFilter.value;
+
+      // Filtrelenmiş kanal listesi
+      const filtered = channels.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(searchTerm);
+        const matchesCategory = selectedCategory === "" || c.category === selectedCategory;
+        return matchesSearch && matchesCategory;
+      });
+
+      renderChannelList(filtered);
+    }
+
+    // Kanal listesini render et
+    function renderChannelList(channelList) {
+      channelContainer.innerHTML = "";
+      channelList.forEach(channel => {
+        const div = document.createElement('div');
+        div.className = 'channel';
+        div.setAttribute('role', 'listitem');
+        div.textContent = channel.name;
+
+        if(channel.live) {
+          const statusSpan = document.createElement('span');
+          statusSpan.className = 'status';
+          statusSpan.textContent = "CANLI";
+          div.appendChild(statusSpan);
+        }
+
+        div.onclick = () => {
+          playStream(channel.url);
+          setActiveChannel(div);
+        };
+
+        channelContainer.appendChild(div);
+      });
+
+      // İlk kanalı otomatik seç
+      if(channelList.length > 0){
+        playStream(channelList[0].url);
+        setActiveChannel(channelContainer.firstChild);
+      } else {
+        video.pause();
+        video.src = "";
+      }
+    }
+
+    // Seçili kanalı işaretle
+    function setActiveChannel(selectedDiv) {
+      const allChannels = document.querySelectorAll('.channel');
+      allChannels.forEach(ch => ch.classList.remove('active'));
+      if(selectedDiv) selectedDiv.classList.add('active');
+    }
+
+    // HLS.js ile stream oynatıcı fonksiyonu
+    let hls;
+    function playStream(url) {
+      if(hls) {
+        hls.destroy();
+        hls = null;
+      }
+
+      if(Hls.isSupported()) {
+        hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          video.play();
+        });
+      } else if(video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Safari ve iOS için native destek
+        video.src = url;
+        video.addEventListener('loadedmetadata', () => {
+          video.play();
+        });
+      } else {
+        alert('Tarayıcınız HLS video akışını desteklemiyor.');
+      }
+    }
+
+    // Canlı skorları göster
+    function renderLiveScores() {
+      scoresContainer.innerHTML = "";
+      liveScores.forEach(match => {
+        const div = document.createElement('div');
+        div.className = "score-item";
+
+        div.innerHTML = `
+          <div class="team">${match.team1}</div>
+          <div class="score">${match.score1} - ${match.score2}</div>
+          <div class="team">${match.team2}</div>
+          <div class="match-time">${match.time}</div>
+        `;
+        scoresContainer.appendChild(div);
+      });
+    }
+
+    // Sayfa yüklendiğinde
+    window.onload = () => {
+      loadCategories();
+      filterChannels();
+      renderLiveScores();
+    };
   </script>
 
 </body>
