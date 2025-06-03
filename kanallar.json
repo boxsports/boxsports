@@ -1,20 +1,20 @@
 [
   {
     "id": "1",
-    "name": "Beşiktaş HD",
-    "category": "Futbol",
-    "stream_url": "https://lll.istekbet3.tv/yayinzirve.m3u8"
+    "ad": "Spor Kanalı 1",
+    "kategori": "Futbol",
+    "url": "https://lll.istekbet3.tv/yayinzirve.m3u8"
   },
   {
     "id": "2",
-    "name": "Fenerbahçe HD",
-    "category": "Futbol",
-    "stream_url": "https://lll.istekbet3.tv/yayinzirve.m3u8"
+    "ad": "Spor Kanalı 2",
+    "kategori": "Basketbol",
+    "url": "https://example.com/live2.m3u8"
   },
   {
     "id": "3",
-    "name": "Basketbol Canlı",
-    "category": "Basketbol",
-    "stream_url": "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
+    "ad": "Spor Kanalı 3",
+    "kategori": "Tenis",
+    "url": "https://example.com/live3.m3u8"
   }
 ]
