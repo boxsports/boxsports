@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🔒 Admin Panel</h1>
+  <input type="password" id="adminPass" placeholder="Admin Şifresi">
+  <button onclick="checkAdmin()">Giriş</button>
+  <div id="adminArea" style="display:none;">
+    <h3>Kullanıcılar</h3>
+    <ul id="userList"></ul>
+    <h3>Kanal Ekle</h3>
+    <input type="text" id="newChannel"><button onclick="addChannel()">Ekle</button>
+    <ul id="channelList"></ul>
+  </div>
+  <script src="admin.js"></script>
+</body>
+</html>
