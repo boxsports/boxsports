@@ -149,12 +149,28 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
   }
   #video {
     width: 100%;
     height: 100%;
     max-height: 480px;
     background: black;
+  }
+
+  /* Hata mesajı */
+  #errorMessage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff4444;
+    background: rgba(0,0,0,0.7);
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    display: none;
+    z-index: 10;
   }
 
   /* Footer */
@@ -232,6 +248,7 @@
 
   <section class="video-player" aria-label="Video Oynatıcı">
     <video id="video" controls autoplay playsinline></video>
+    <div id="errorMessage" role="alert" aria-live="assertive"></div>
   </section>
 </main>
 
@@ -251,207 +268,194 @@ const channelContainer = document.getElementById('channelContainer');
 const searchInput = document.getElementById('searchInput');
 const filterCategory = document.getElementById('filterCategory');
 const themeToggle = document.getElementById('themeToggle');
+const errorMessage = document.getElementById('errorMessage');
 const clock = document.getElementById('clock');
 
 let hls = null;
 
-// Tema fonksiyonları
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('theme', theme);
-  updateThemeIcon(theme);
-}
-function updateThemeIcon(theme) {
-  if(theme === 'dark') {
-    themeToggle.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#ffd600">
-        <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1" x2="12" y2="3" />
-        <line x1="12" y1="21" x2="12" y2="23" />
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-        <line x1="1" y1="12" x2="3" y2="12" />
-        <line x1="21" y1="12" x2="23" y2="12" />
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-      </svg>
-    `;
-  } else {
-    themeToggle.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#0077cc">
-        <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1" x2="12" y2="3" />
-        <line x1="12" y1="21" x2="12" y2="23" />
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-        <line x1="1" y1="12" x2="3" y2="12" />
-        <line x1="21" y1="12" x2="23" y2="12" />
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-      </svg>
-    `;
-  }
-}
-themeToggle.addEventListener('click', () => {
-  const currentTheme = document.documentElement.getAttribute('data-theme');
-  if(currentTheme === 'dark') {
-    applyTheme('light');
-  } else {
-    applyTheme('dark');
-  }
-});
-
-// Saat fonksiyonu
+// Tarih ve saati güncelle
 function updateClock() {
   const now = new Date();
-  const h = String(now.getHours()).padStart(2,'0');
-  const m = String(now.getMinutes()).padStart(2,'0');
-  const s = String(now.getSeconds()).padStart(2,'0');
-  clock.textContent = `${h}:${m}:${s}`;
+  clock.textContent = now.toLocaleTimeString('tr-TR', { hour12: false });
 }
 setInterval(updateClock, 1000);
 updateClock();
 
-// Kanal verisi dinamik yükleme örneği (örnek kanal verisi kullanıldı)
+// Tema değiştirme ve kaydetme
+function loadTheme() {
+  const saved = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', saved);
+  updateThemeIcon(saved);
+}
+function saveTheme(theme) {
+  localStorage.setItem('theme', theme);
+}
+function updateThemeIcon(theme) {
+  if(theme === 'dark') {
+    themeToggle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#fff">
+      <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>
+    </svg>`;
+  } else {
+    themeToggle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#0077cc">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3" />
+      <line x1="12" y1="21" x2="12" y2="23" />
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+      <line x1="1" y1="12" x2="3" y2="12" />
+      <line x1="21" y1="12" x2="23" y2="12" />
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+    </svg>`;
+  }
+}
+themeToggle.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  saveTheme(next);
+  updateThemeIcon(next);
+});
+loadTheme();
+
+// Kanalları JSON dosyasından yükle
 async function loadChannels() {
-  // Buraya gerçek kanal.json dosyasının URL'sini koyabilirsin
-  // let response = await fetch('kanal.json');
-  // channels = await response.json();
-
-  // Örnek veri
-  channels = [
-    {id: 1, name: "BeIN Sports", category: "Futbol", url: "https://lll.istekbet3.tv/yayinzirve.m3u8"},
-    {id: 2, name: "ESPN", category: "Basketbol", url: "https://example.com/stream2.m3u8"},
-    {id: 3, name: "NBA TV", category: "Basketbol", url: "https://example.com/stream3.m3u8"},
-    {id: 4, name: "F1 TV", category: "Formula 1", url: "https://example.com/stream4.m3u8"}
-  ];
-
-  populateCategoryFilter();
-  filteredChannels = channels;
-  renderChannelList(filteredChannels);
+  try {
+    const response = await fetch('kanallar.json');
+    if(!response.ok) throw new Error('Kanallar yüklenemedi');
+    channels = await response.json();
+    setupCategories();
+    filteredChannels = [...channels];
+    renderChannels();
+  } catch (err) {
+    console.error(err);
+    channelContainer.innerHTML = '<p style="padding: 12px; color: red;">Kanallar yüklenemedi.</p>';
+  }
 }
 
-// Kategori filtre seçeneklerini oluştur
-function populateCategoryFilter() {
-  const categories = [...new Set(channels.map(c => c.category))].sort();
+// Kategori seçeneklerini ayarla
+function setupCategories() {
+  const categories = [...new Set(channels.map(ch => ch.kategori))].sort();
   filterCategory.innerHTML = '<option value="all">Tüm Kategoriler</option>';
-  categories.forEach(cat => {
-    const opt = document.createElement('option');
-    opt.value = cat;
-    opt.textContent = cat;
-    filterCategory.appendChild(opt);
-  });
+  for(const cat of categories) {
+    filterCategory.innerHTML += `<option value="${cat}">${cat}</option>`;
+  }
 }
 
-// Kanal listesini render et
-function renderChannelList(list) {
+// Kanalları listele
+function renderChannels() {
   channelContainer.innerHTML = '';
-  if(list.length === 0) {
-    channelContainer.textContent = 'Kanal bulunamadı.';
+  if(filteredChannels.length === 0) {
+    channelContainer.innerHTML = '<p style="padding: 12px;">Kanal bulunamadı.</p>';
     return;
   }
-  list.forEach(channel => {
+  for(const ch of filteredChannels) {
     const div = document.createElement('div');
     div.className = 'channel';
-    div.setAttribute('tabindex', '0');
     div.setAttribute('role', 'button');
-    div.setAttribute('aria-pressed', activeChannelId === channel.id ? 'true' : 'false');
-    div.innerHTML = `
-      <div class="channel-name">${channel.name}</div>
-      <div class="channel-category">${channel.category}</div>
-    `;
-    div.addEventListener('click', () => selectChannel(channel.id));
-    div.addEventListener('keydown', e => {
-      if(e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        selectChannel(channel.id);
-      }
-    });
-    if(activeChannelId === channel.id) div.classList.add('active');
+    div.setAttribute('tabindex', '0');
+    div.dataset.id = ch.id;
+    div.innerHTML = `<div class="channel-name">${ch.ad}</div><div class="channel-category">${ch.kategori}</div>`;
+    if(ch.id === activeChannelId) div.classList.add('active');
+    div.onclick = () => selectChannel(ch.id);
+    div.onkeypress = (e) => { if(e.key === 'Enter' || e.key === ' ') { selectChannel(ch.id); e.preventDefault(); } };
     channelContainer.appendChild(div);
-  });
+  }
 }
 
-// Kanal seçimi ve video oynatma
+// Kanal seçimi ve oynatma
 function selectChannel(id) {
-  if(activeChannelId === id) return; // Aynı kanal seçiliyse
+  if(id === activeChannelId) return;
   activeChannelId = id;
-  const selected = channels.find(c => c.id === id);
-  renderChannelList(filteredChannels);
-  playStream(selected.url);
+  renderChannels();
+  const channel = channels.find(c => c.id === id);
+  if(channel) {
+    playStream(channel.url);
+    clearError();
+  }
 }
 
-// HLS.js ile video oynatma
+// Arama ve filtre işlemleri
+searchInput.addEventListener('input', filterChannels);
+filterCategory.addEventListener('change', filterChannels);
+
+function filterChannels() {
+  const searchTerm = searchInput.value.trim().toLowerCase();
+  const category = filterCategory.value;
+  filteredChannels = channels.filter(ch => {
+    const matchName = ch.ad.toLowerCase().includes(searchTerm);
+    const matchCategory = category === 'all' || ch.kategori === category;
+    return matchName && matchCategory;
+  });
+  renderChannels();
+}
+
+// HLS.js ile yayın oynatma
 function playStream(url) {
   if(hls) {
     hls.destroy();
     hls = null;
   }
+  clearError();
+
   if(Hls.isSupported()) {
     hls = new Hls();
     hls.loadSource(url);
     hls.attachMedia(video);
+
     hls.on(Hls.Events.MANIFEST_PARSED, function() {
-      video.play();
+      video.play().catch(() => {
+        // otomatik oynatma engellenmiş olabilir
+      });
+    });
+
+    hls.on(Hls.Events.ERROR, function(event, data) {
+      console.error("HLS.js hatası:", data);
+      if(data.details === Hls.ErrorDetails.FRAG_PARSING_ERROR) {
+        showError("Yayın segmentleri desteklenmeyen formatta olabilir. Yayın oynatılamıyor.");
+      }
+      if(data.fatal) {
+        switch(data.type) {
+          case Hls.ErrorTypes.NETWORK_ERROR:
+            showError("Ağ hatası: Yayın yüklenemiyor.");
+            hls.startLoad();
+            break;
+          case Hls.ErrorTypes.MEDIA_ERROR:
+            showError("Medya hatası: Yayın oynatılamıyor.");
+            hls.recoverMediaError();
+            break;
+          default:
+            showError("Ciddi hata oluştu, yayın oynatılamıyor.");
+            hls.destroy();
+            break;
+        }
+      }
     });
   } else if(video.canPlayType('application/vnd.apple.mpegurl')) {
     video.src = url;
     video.addEventListener('loadedmetadata', function() {
-      video.play();
+      video.play().catch(() => {});
     });
   } else {
-    alert('Tarayıcınız HLS akışını desteklemiyor.');
+    showError('Tarayıcınız HLS akışını desteklemiyor.');
   }
 }
 
-// Arama ve filtreleme
-searchInput.addEventListener('input', () => {
-  filterAndRender();
-});
-filterCategory.addEventListener('change', () => {
-  filterAndRender();
-});
-function filterAndRender() {
-  const searchTerm = searchInput.value.toLowerCase();
-  const category = filterCategory.value;
-  filteredChannels = channels.filter(ch => {
-    const matchName = ch.name.toLowerCase().includes(searchTerm);
-    const matchCategory = (category === 'all') || (ch.category === category);
-    return matchName && matchCategory;
-  });
-  renderChannelList(filteredChannels);
+function showError(msg) {
+  errorMessage.textContent = msg;
+  errorMessage.style.display = 'block';
+  video.style.display = 'none';
+}
+function clearError() {
+  errorMessage.style.display = 'none';
+  errorMessage.textContent = '';
+  video.style.display = 'block';
 }
 
-// Sayfa yüklendiğinde
-window.addEventListener('load', () => {
-  // Kayıtlı tema varsa uygula, yoksa sistem tercihini uygula
-  const savedTheme = localStorage.getItem('theme');
-  if(savedTheme) {
-    applyTheme(savedTheme);
-  } else {
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(prefersDark ? 'dark' : 'light');
-  }
-  loadChannels();
+// İlk kanal otomatik seç
+loadChannels().then(() => {
+  if(channels.length > 0) selectChannel(channels[0].id);
 });
-
-// Sağ tıklama engelleme ve F12 engelleme scriptleri
-document.addEventListener('contextmenu', function (e) {
-  e.preventDefault();
-  window.location.href = '/404';  // 404 sayfasına yönlendirme
-});
-document.addEventListener('keydown', function (e) {
-  if (e.key === 'F12') {
-    e.preventDefault();
-    window.location.href = '/404';
-  }
-});
-document.onkeydown = function (e) {
-  if (e.keyCode === 123) {  // F12 tuşu
-    window.location.href = '/404';
-    return false;
-  }
-};
 </script>
 
 </body>
