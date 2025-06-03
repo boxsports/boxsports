@@ -1,0 +1,20 @@
+[
+  {
+    "name": "TRT Spor",
+    "stream_url": "https://lll.istekbet3.tv/yayinzirve.m3u8",
+    "live": true,
+    "category": "Genel"
+  },
+  {
+    "name": "Bein Sports",
+    "stream_url": "https://example.com/stream2.m3u8",
+    "live": false,
+    "category": "Futbol"
+  },
+  {
+    "name": "ESPN",
+    "stream_url": "https://example.com/stream3.m3u8",
+    "live": true,
+    "category": "Basketbol"
+  }
+]
