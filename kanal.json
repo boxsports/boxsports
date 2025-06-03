@@ -1,20 +1,20 @@
 [
   {
-    "name": "TRT Spor",
-    "stream_url": "https://lll.istekbet3.tv/yayinzirve.m3u8",
-    "live": true,
-    "category": "Genel"
+    "id": "1",
+    "name": "Beşiktaş HD",
+    "category": "Futbol",
+    "stream_url": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
   },
   {
-    "name": "Bein Sports",
-    "stream_url": "https://example.com/stream2.m3u8",
-    "live": false,
-    "category": "Futbol"
+    "id": "2",
+    "name": "Fenerbahçe HD",
+    "category": "Futbol",
+    "stream_url": "https://test-streams.mux.dev/test_001/stream.m3u8"
   },
   {
-    "name": "ESPN",
-    "stream_url": "https://example.com/stream3.m3u8",
-    "live": true,
-    "category": "Basketbol"
+    "id": "3",
+    "name": "Basketbol Canlı",
+    "category": "Basketbol",
+    "stream_url": "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
   }
 ]
