@@ -1,1 +1,131 @@
 
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BOX SPORTS</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #cceaff, #e6f7ff);
+      color: #003366;
+    }
+
+    header {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      padding: 20px;
+      background-color: #0077cc;
+      color: white;
+    }
+
+    .container {
+      display: flex;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .channel-list {
+      width: 25%;
+      background-color: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      height: 500px;
+      overflow-y: auto;
+    }
+
+    .channel-list input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+
+    .channel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+
+    .channel:hover {
+      background-color: #f0f8ff;
+    }
+
+    .status {
+      color: #00cc66;
+      font-weight: bold;
+    }
+
+    .video-player {
+      flex: 1;
+      background-color: #000;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    iframe, video {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+      color: #003366;
+      background-color: #e6f7ff;
+    }
+  </style>
+</head>
+<body>
+
+  <header>BOX SPORTS</header>
+
+  <div class="container">
+    <div class="channel-list">
+      <input type="text" placeholder="Kanallarda Ara..." id="searchInput" onkeyup="searchChannels()"/>
+      <div id="channelContainer">
+        <div class="channel" onclick="playChannel('https://lll.istekbet3.tv/yayinzirve.m3u8')">BEIN SPORTS 1 <span class="status">● Canlı</span></div>
+        <div class="channel" onclick="playChannel('https://example.com/stream2')">BEIN SPORTS 2 <span class="status">● Canlı</span></div>
+        <div class="channel" onclick="playChannel('https://example.com/stream3')">BEIN SPORTS 3 <span class="status">● Canlı</span></div>
+        <div class="channel" onclick="playChannel('https://example.com/stream4')">BEIN SPORTS 4 <span class="status">● Canlı</span></div>
+        <div class="channel" onclick="playChannel('https://example.com/stream5')">BEIN SPORTS 5 <span class="status">● Canlı</span></div>
+        <div class="channel" onclick="playChannel('https://example.com/stream6')">BEIN SPORTS MAX 1 <span class="status">● Canlı</span></div>
+        <div class="channel" onclick="playChannel('https://example.com/stream7')">BEIN SPORTS MAX 2 <span class="status">● Canlı</span></div>
+        <div class="channel" onclick="playChannel('https://example.com/stream8')">S SPORT <span class="status">● Canlı</span></div>
+      </div>
+    </div>
+
+    <div class="video-player">
+      <iframe id="videoFrame" src="https://example.com/stream1" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <footer>BOX SPORTS tarafından desteklenmektedir.</footer>
+
+  <script>
+    function playChannel(url) {
+      document.getElementById('videoFrame').src = url;
+    }
+
+    function searchChannels() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const channels = document.querySelectorAll(".channel");
+      channels.forEach(channel => {
+        const name = channel.textContent.toLowerCase();
+        channel.style.display = name.includes(input) ? "flex" : "none";
+      });
+    }
+  </script>
+
+</body>
+</html>
