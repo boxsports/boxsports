@@ -8,15 +8,6 @@
 <!-- Favicon -->
 <link rel="icon" href="https://hizliresim.com/2k46hi5" type="image/png" />
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-L72XKZ22X2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-L72XKZ22X2');
-</script>
-
 <!-- HLS.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
@@ -51,34 +42,32 @@
     padding: 10px 20px;
     gap: 15px;
   }
-  header .logo {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
+  header img {
+    width: 36px;
+    height: 36px;
   }
   #header-title {
     font-weight: 700;
     font-size: 24px;
     flex-grow: 1;
   }
-  button.theme-toggle {
+  select.lang-select, button.theme-toggle {
     background: white;
     border: none;
-    border-radius: 50%;
-    padding: 6px;
+    border-radius: 4px;
+    padding: 6px 10px;
     cursor: pointer;
+    font-weight: 600;
+    color: #0077cc;
+  }
+  button.theme-toggle {
     width: 36px; height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s ease;
-    color: #0077cc;
-  }
-  button.theme-toggle:hover {
-    background-color: #e0f0ff;
   }
   button.theme-toggle svg {
-    stroke: #0077cc;
+    fill: #0077cc;
     width: 24px; height: 24px;
   }
   .clock {
@@ -149,28 +138,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
   }
   #video {
     width: 100%;
     height: 100%;
     max-height: 480px;
     background: black;
-  }
-
-  /* Hata mesajı */
-  #errorMessage {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #ff4444;
-    background: rgba(0,0,0,0.7);
-    padding: 12px 20px;
-    border-radius: 6px;
-    font-weight: 700;
-    display: none;
-    z-index: 10;
   }
 
   /* Footer */
@@ -217,20 +190,17 @@
 <body>
 
 <header role="banner" aria-label="Sayfa Başlığı">
-  <img class="logo" src="https://hizliresim.com/2k46hi5" alt="Box Sports Logo" title="Box Sports" />
+  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Box Sports Logo" title="Box Sports" />
   <span id="header-title">Box Sports</span>
 
+  <select aria-label="Dil seçici" class="lang-select" id="langSelect" title="Dil Seç">
+    <option value="tr">Türkçe</option>
+    <option value="en">English</option>
+  </select>
+
   <button aria-label="Tema değiştirici" id="themeToggle" class="theme-toggle" title="Tema değiştir">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="5"/>
-      <line x1="12" y1="1" x2="12" y2="3" />
-      <line x1="12" y1="21" x2="12" y2="23" />
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-      <line x1="1" y1="12" x2="3" y2="12" />
-      <line x1="21" y1="12" x2="23" y2="12" />
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
     </svg>
   </button>
 
@@ -248,7 +218,6 @@
 
   <section class="video-player" aria-label="Video Oynatıcı">
     <video id="video" controls autoplay playsinline></video>
-    <div id="errorMessage" role="alert" aria-live="assertive"></div>
   </section>
 </main>
 
@@ -259,6 +228,29 @@
 <script>
 "use strict";
 
+// Çoklu dil içerikleri
+const langData = {
+  tr: {
+    searchPlaceholder: "Kanal Ara...",
+    allCategories: "Tüm Kategoriler",
+    liveStatus: "Canlı",
+    offlineStatus: "Çevrimdışı",
+    errorLoadChannels: "Kanallar yüklenemedi.",
+    errorLoadStream: "Yayın yüklenemedi.",
+    headerTitle: "Box Sports",
+  },
+  en: {
+    searchPlaceholder: "Search channel...",
+    allCategories: "All Categories",
+    liveStatus: "Live",
+    offlineStatus: "Offline",
+    errorLoadChannels: "Failed to load channels.",
+    errorLoadStream: "Failed to load stream.",
+    headerTitle: "Box Sports",
+  }
+};
+
+let currentLang = 'tr';
 let channels = [];
 let filteredChannels = [];
 let activeChannelId = null;
@@ -267,195 +259,180 @@ const video = document.getElementById('video');
 const channelContainer = document.getElementById('channelContainer');
 const searchInput = document.getElementById('searchInput');
 const filterCategory = document.getElementById('filterCategory');
+const langSelect = document.getElementById('langSelect');
 const themeToggle = document.getElementById('themeToggle');
-const errorMessage = document.getElementById('errorMessage');
+const themeIcon = document.getElementById('themeIcon');
 const clock = document.getElementById('clock');
+const headerTitle = document.getElementById('header-title');
 
 let hls = null;
 
-// Tarih ve saati güncelle
+// Tema fonksiyonları
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  updateThemeIcon(theme);
+}
+function updateThemeIcon(theme) {
+  if(theme === 'dark') {
+    themeIcon.innerHTML = '<path fill="none" d="M0 0h24v24H0z"/><path fill="#FFF" d="M12 3a9 9 0 1 0 9 9a9 9 0 0 1-9-9z"/>';
+  } else {
+    themeIcon.innerHTML = '<circle cx="12" cy="12" r="5" fill="#0077cc"/>';
+  }
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = current === 'light' ? 'dark' : 'light';
+  applyTheme(next);
+}
+
+// Saat güncelle
 function updateClock() {
   const now = new Date();
-  clock.textContent = now.toLocaleTimeString('tr-TR', { hour12: false });
+  const timeString = now.toLocaleTimeString(currentLang === 'tr' ? 'tr-TR' : 'en-US', {hour12:false});
+  clock.textContent = timeString;
 }
 setInterval(updateClock, 1000);
 updateClock();
 
-// Tema değiştirme ve kaydetme
-function loadTheme() {
-  const saved = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  document.documentElement.setAttribute('data-theme', saved);
-  updateThemeIcon(saved);
-}
-function saveTheme(theme) {
-  localStorage.setItem('theme', theme);
-}
-function updateThemeIcon(theme) {
-  if(theme === 'dark') {
-    themeToggle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#fff">
-      <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>
-    </svg>`;
-  } else {
-    themeToggle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#0077cc">
-      <circle cx="12" cy="12" r="5"/>
-      <line x1="12" y1="1" x2="12" y2="3" />
-      <line x1="12" y1="21" x2="12" y2="23" />
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-      <line x1="1" y1="12" x2="3" y2="12" />
-      <line x1="21" y1="12" x2="23" y2="12" />
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-    </svg>`;
-  }
-}
-themeToggle.addEventListener('click', () => {
-  const current = document.documentElement.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  saveTheme(next);
-  updateThemeIcon(next);
+// Dil değiştirici
+langSelect.addEventListener('change', () => {
+  currentLang = langSelect.value;
+  updateTexts();
+  filterChannels();
 });
-loadTheme();
 
-// Kanalları JSON dosyasından yükle
-async function loadChannels() {
-  try {
-    const response = await fetch('kanallar.json');
-    if(!response.ok) throw new Error('Kanallar yüklenemedi');
-    channels = await response.json();
-    setupCategories();
-    filteredChannels = [...channels];
-    renderChannels();
-  } catch (err) {
-    console.error(err);
-    channelContainer.innerHTML = '<p style="padding: 12px; color: red;">Kanallar yüklenemedi.</p>';
-  }
+function updateTexts() {
+  searchInput.placeholder = langData[currentLang].searchPlaceholder;
+  filterCategory.options[0].textContent = langData[currentLang].allCategories;
+  headerTitle.textContent = langData[currentLang].headerTitle;
 }
 
-// Kategori seçeneklerini ayarla
-function setupCategories() {
-  const categories = [...new Set(channels.map(ch => ch.kategori))].sort();
-  filterCategory.innerHTML = '<option value="all">Tüm Kategoriler</option>';
-  for(const cat of categories) {
-    filterCategory.innerHTML += `<option value="${cat}">${cat}</option>`;
-  }
+function fetchChannels() {
+  fetch('kanal.json')
+    .then(res => {
+      if(!res.ok) throw new Error(langData[currentLang].errorLoadChannels);
+      return res.json();
+    })
+    .then(data => {
+      channels = data;
+      populateCategoryFilter();
+      filterChannels();
+    })
+    .catch(err => {
+      channelContainer.innerHTML = <p style="padding:10px;color:red;">${err.message}</p>;
+    });
 }
 
-// Kanalları listele
-function renderChannels() {
-  channelContainer.innerHTML = '';
-  if(filteredChannels.length === 0) {
-    channelContainer.innerHTML = '<p style="padding: 12px;">Kanal bulunamadı.</p>';
-    return;
-  }
-  for(const ch of filteredChannels) {
-    const div = document.createElement('div');
-    div.className = 'channel';
-    div.setAttribute('role', 'button');
-    div.setAttribute('tabindex', '0');
-    div.dataset.id = ch.id;
-    div.innerHTML = `<div class="channel-name">${ch.ad}</div><div class="channel-category">${ch.kategori}</div>`;
-    if(ch.id === activeChannelId) div.classList.add('active');
-    div.onclick = () => selectChannel(ch.id);
-    div.onkeypress = (e) => { if(e.key === 'Enter' || e.key === ' ') { selectChannel(ch.id); e.preventDefault(); } };
-    channelContainer.appendChild(div);
-  }
-}
+function populateCategoryFilter() {
+  // Kategorileri al, benzersiz hale getir
+  const categories = [...new Set(channels.map(ch => ch.category))].sort();
+  // Mevcut seçenekleri temizle
+  filterCategory.innerHTML = '';
+  // Tüm kategoriler seçeneği
+  const allOption = document.createElement('option');
+  allOption.value = 'all';
+  allOption.textContent = langData[currentLang].allCategories;
+  filterCategory.appendChild(allOption);
 
-// Kanal seçimi ve oynatma
-function selectChannel(id) {
-  if(id === activeChannelId) return;
-  activeChannelId = id;
-  renderChannels();
-  const channel = channels.find(c => c.id === id);
-  if(channel) {
-    playStream(channel.url);
-    clearError();
-  }
+  categories.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    filterCategory.appendChild(opt);
+  });
 }
-
-// Arama ve filtre işlemleri
-searchInput.addEventListener('input', filterChannels);
-filterCategory.addEventListener('change', filterChannels);
 
 function filterChannels() {
   const searchTerm = searchInput.value.trim().toLowerCase();
-  const category = filterCategory.value;
+  const selectedCategory = filterCategory.value;
+
   filteredChannels = channels.filter(ch => {
-    const matchName = ch.ad.toLowerCase().includes(searchTerm);
-    const matchCategory = category === 'all' || ch.kategori === category;
-    return matchName && matchCategory;
+    const matchSearch = ch.name.toLowerCase().includes(searchTerm);
+    const matchCategory = selectedCategory === 'all' || ch.category === selectedCategory;
+    return matchSearch && matchCategory;
   });
+
   renderChannels();
 }
 
-// HLS.js ile yayın oynatma
+function renderChannels() {
+  if(filteredChannels.length === 0) {
+    channelContainer.innerHTML = <p style="padding:10px;">${langData[currentLang].errorLoadChannels}</p>;
+    return;
+  }
+  channelContainer.innerHTML = '';
+  filteredChannels.forEach(ch => {
+    const div = document.createElement('div');
+    div.className = 'channel';
+    div.tabIndex = 0;
+    if(ch.id === activeChannelId) div.classList.add('active');
+    div.setAttribute('role', 'button');
+    div.setAttribute('aria-pressed', ch.id === activeChannelId ? 'true' : 'false');
+    div.innerHTML = 
+      <div class="channel-name">${ch.name}</div>
+      <div class="channel-category">${ch.category}</div>
+    ;
+    div.addEventListener('click', () => {
+      selectChannel(ch.id);
+    });
+    div.addEventListener('keypress', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectChannel(ch.id);
+      }
+    });
+    channelContainer.appendChild(div);
+  });
+}
+
+function selectChannel(id) {
+  if(activeChannelId === id) return;
+  activeChannelId = id;
+  renderChannels();
+  const channel = channels.find(ch => ch.id === id);
+  if(!channel) return;
+
+  playStream(channel.stream_url);
+}
+
+// Video oynatma
 function playStream(url) {
   if(hls) {
     hls.destroy();
     hls = null;
   }
-  clearError();
-
   if(Hls.isSupported()) {
     hls = new Hls();
     hls.loadSource(url);
     hls.attachMedia(video);
-
-    hls.on(Hls.Events.MANIFEST_PARSED, function() {
-      video.play().catch(() => {
-        // otomatik oynatma engellenmiş olabilir
-      });
-    });
-
     hls.on(Hls.Events.ERROR, function(event, data) {
-      console.error("HLS.js hatası:", data);
-      if(data.details === Hls.ErrorDetails.FRAG_PARSING_ERROR) {
-        showError("Yayın segmentleri desteklenmeyen formatta olabilir. Yayın oynatılamıyor.");
-      }
       if(data.fatal) {
-        switch(data.type) {
-          case Hls.ErrorTypes.NETWORK_ERROR:
-            showError("Ağ hatası: Yayın yüklenemiyor.");
-            hls.startLoad();
-            break;
-          case Hls.ErrorTypes.MEDIA_ERROR:
-            showError("Medya hatası: Yayın oynatılamıyor.");
-            hls.recoverMediaError();
-            break;
-          default:
-            showError("Ciddi hata oluştu, yayın oynatılamıyor.");
-            hls.destroy();
-            break;
-        }
+        console.error('HLS.js fatal error:', data);
+        alert(langData[currentLang].errorLoadStream);
       }
     });
   } else if(video.canPlayType('application/vnd.apple.mpegurl')) {
     video.src = url;
-    video.addEventListener('loadedmetadata', function() {
-      video.play().catch(() => {});
-    });
   } else {
-    showError('Tarayıcınız HLS akışını desteklemiyor.');
+    alert(langData[currentLang].errorLoadStream);
   }
+  video.play().catch(console.error);
 }
 
-function showError(msg) {
-  errorMessage.textContent = msg;
-  errorMessage.style.display = 'block';
-  video.style.display = 'none';
-}
-function clearError() {
-  errorMessage.style.display = 'none';
-  errorMessage.textContent = '';
-  video.style.display = 'block';
-}
+// Event listenerlar
+searchInput.addEventListener('input', filterChannels);
+filterCategory.addEventListener('change', filterChannels);
+themeToggle.addEventListener('click', toggleTheme);
 
-// İlk kanal otomatik seç
-loadChannels().then(() => {
-  if(channels.length > 0) selectChannel(channels[0].id);
-});
+// Başlangıçta temayı yükle
+const savedTheme = localStorage.getItem('theme') || 'light';
+applyTheme(savedTheme);
+
+// Başlangıçta dil ve kanalları yükle
+updateTexts();
+fetchChannels();
+
 </script>
 
 </body>
