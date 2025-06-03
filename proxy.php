@@ -7,10 +7,10 @@ if (!isset($_GET['url'])) {
 
 $url = $_GET['url'];
 
-// İzin verilen domainler (kendi ihtiyaçlarına göre güncelle)
+// İzin verilen domainler
 $allowedDomains = [
     'lll.istekbet3.tv',
-    'https://w00x-cdn.pages.dev'
+    'example.com'
 ];
 
 $parsedUrl = parse_url($url);
@@ -39,14 +39,14 @@ curl_close($ch);
 http_response_code($httpCode);
 
 if (strpos($contentType, 'application/vnd.apple.mpegurl') !== false || strpos($contentType, 'application/x-mpegURL') !== false) {
-    // .m3u8 dosyası, segment URL'lerini proxy ile yönlendir
-    $baseUrl = rtrim(dirname($url), '/') . '/';
+    // .m3u8 dosyasını proxy’le ve segment URL’lerini proxy’ye çevir
 
+    $baseUrl = rtrim(dirname($url), '/') . '/';
     $lines = explode("\n", $response);
     foreach ($lines as &$line) {
         $line = trim($line);
         if ($line && !str_starts_with($line, '#') && (strpos($line, '.ts') !== false || strpos($line, '.m3u8') !== false)) {
-            // Göreceli URL ise tam yap
+            // Göreceli ise tam yap
             if (!preg_match('#^https?://#', $line)) {
                 $line = $baseUrl . $line;
             }
@@ -58,7 +58,7 @@ if (strpos($contentType, 'application/vnd.apple.mpegurl') !== false || strpos($c
 
     header('Content-Type: application/vnd.apple.mpegurl');
 } elseif (strpos($contentType, 'video/MP2T') !== false || strpos($contentType, 'application/octet-stream') !== false) {
-    // TS segment dosyaları için Content-Type
+    // .ts segmentleri için doğru Content-Type
     header('Content-Type: video/MP2T');
 } else {
     header('Content-Type: ' . $contentType);
