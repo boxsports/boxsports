@@ -2,22 +2,34 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BOX SPORTS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Box Sports - Canlı Yayın</title>
   <link rel="stylesheet" href="style.css" />
+  <script defer src="script.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-  <h1>BOX SPORTS</h1>
-  <div class="container">
-    <div class="channel-list">
-      <input type="text" id="searchInput" placeholder="Kanallarda Ara..." />
-      <ul id="channels"></ul>
-    </div>
-    <div class="player">
-      <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
-    </div>
-  </div>
-  <footer>BOX SPORTS tarafından desteklenmektedir.</footer>
-  <script src="script.js"></script>
+  <header>
+    <h1>📺 BOX SPORTS</h1>
+  </header>
+
+  <main class="container">
+    <aside class="channel-list">
+      <input type="text" id="search" placeholder="Kanallarda ara..." />
+      <ul id="channelItems">
+        <!-- Dinamik olarak JS'den gelecek -->
+      </ul>
+    </aside>
+
+    <section class="player">
+      <iframe id="player" src="https://www.example.com/embed" allowfullscreen></iframe>
+    </section>
+  </main>
+
+  <footer>
+    <p>⚡ BOX SPORTS tarafından desteklenmektedir.</p>
+  </footer>
 </body>
 </html>
