@@ -1,0 +1,77 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #e6f7ff;
+  color: #003a5d;
+}
+
+.container {
+  display: flex;
+  height: 90vh;
+}
+
+.sidebar {
+  width: 300px;
+  background: #f0faff;
+  padding: 10px;
+  overflow-y: auto;
+  border-right: 2px solid #cce7f6;
+}
+
+.sidebar input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  border: 1px solid #a3d5f7;
+  font-size: 16px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  background: white;
+  border-radius: 10px;
+  margin: 5px 0;
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.3s;
+}
+
+.sidebar li:hover {
+  background: #d9f1ff;
+}
+
+.tag {
+  color: #00bfa6;
+  font-weight: bold;
+}
+
+.player-area {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+video {
+  width: 100%;
+  max-height: 80vh;
+  border-radius: 15px;
+  background: black;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  background: #d2f0ff;
+  font-weight: bold;
+}
