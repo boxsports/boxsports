@@ -2,13 +2,12 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Box Sports</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>BOX SPORTS</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body oncontextmenu="return false">
   <div class="container">
-    <aside class="sidebar">
+    <aside class="channel-list">
       <input type="text" id="searchInput" placeholder="Kanallarda Ara..." />
       <ul id="channelList"></ul>
     </aside>
@@ -17,11 +16,9 @@
     </main>
   </div>
   <footer>
-    BOX SPORTS tarafından desteklenmektedir.
+    <p><a href="https://t.me/boxsportss" target="_blank">Telegram Kanalımız</a></p>
+    <p>BOX SPORTS tarafından desteklenmektedir.</p>
   </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <script src="channels.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
