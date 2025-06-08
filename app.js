@@ -1,35 +1,37 @@
-const channelList = document.getElementById("channelList");
-const searchInput = document.getElementById("searchInput");
-const videoPlayer = document.getElementById("videoPlayer");
-let hls;
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("m3u.json")
+    .then(response => response.json())
+    .then(data => {
+      const channelList = document.getElementById("channelList");
+      const searchInput = document.getElementById("searchInput");
+      const videoPlayer = document.getElementById("videoPlayer");
 
-function loadChannels(filter = "") {
-  channelList.innerHTML = "";
-  channels
-    .filter(ch => ch.name.toLowerCase().includes(filter.toLowerCase()))
-    .forEach(ch => {
-      const li = document.createElement("li");
-      li.innerHTML = `${ch.name} <span class="tag">● Canlı</span>`;
-      li.addEventListener("click", () => loadStream(ch.url));
-      channelList.appendChild(li);
+      function renderList(filter = "") {
+        channelList.innerHTML = "";
+        data.filter(channel => channel.name.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(channel => {
+              const li = document.createElement("li");
+              li.textContent = `${channel.name} • Canlı`;
+              li.onclick = () => {
+                videoPlayer.src = channel.url;
+                let clicks = parseInt(localStorage.getItem("clicks") || "0");
+                localStorage.setItem("clicks", clicks + 1);
+              };
+              channelList.appendChild(li);
+            });
+      }
+
+      renderList();
+
+      searchInput.addEventListener("input", () => {
+        renderList(searchInput.value);
+      });
     });
-}
 
-function loadStream(url) {
-  if (Hls.isSupported()) {
-    if (hls) hls.destroy();
-    hls = new Hls();
-    hls.loadSource(url);
-    hls.attachMedia(videoPlayer);
-  } else if (videoPlayer.canPlayType("application/vnd.apple.mpegurl")) {
-    videoPlayer.src = url;
-  }
-}
-
-searchInput.addEventListener("input", e => {
-  loadChannels(e.target.value);
-});
-
-window.addEventListener("DOMContentLoaded", () => {
-  loadChannels();
+  // F12 ve Inspect engelleme
+  document.onkeydown = function (e) {
+    if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) || (e.ctrlKey && e.key === "U")) {
+      return false;
+    }
+  };
 });
