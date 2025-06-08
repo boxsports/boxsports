@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Box Sports</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <input type="text" id="searchInput" placeholder="Kanallarda Ara..." />
+      <ul id="channelList"></ul>
+    </aside>
+    <main class="player-area">
+      <video id="videoPlayer" controls autoplay></video>
+    </main>
+  </div>
+  <footer>
+    BOX SPORTS tarafından desteklenmektedir.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="channels.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
