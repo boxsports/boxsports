@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Box Sports</title>
+  <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+  <style>
+    body.light-mode {
+      background: #f4f4f4;
+      color: #000;
+    }
+
+    body.dark-mode {
+      background: #1b1b1b;
+      color: #fff;
+    }
+
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      background: #1e3c72;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    #theme-toggle {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #player-container {
+      width: 90%;
+      max-width: 900px;
+      margin: 20px auto;
+    }
+
+    #channel-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 20px auto;
+      max-width: 1000px;
+    }
+
+    .channel-card {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .channel-card:hover {
+      background-color: #1a6fa7;
+    }
+
+    .favorite-button {
+      background: gold;
+      border: none;
+      border-radius: 4px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    .favorites {
+      margin: 10px;
+      text-align: center;
+    }
+
+    .telegram-button {
+      display: inline-block;
+      background-color: #0088cc;
+      padding: 12px 24px;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+      margin: 30px 0;
+    }
+  </style>
+</head>
+<body class="dark-mode">
+
+<header>
+  Box Sports
+  <button id="theme-toggle">☀️</button>
+</header>
+
+<div id="player-container">
+  <video id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto" width="100%" height="480" data-setup='{}'>
+    <source src="" type="application/x-mpegURL" />
+  </video>
+</div>
+
+<div class="favorites">
+  <strong>Favoriler</strong>
+  <div id="favorites-list"></div>
+</div>
+
+<div id="channel-list"></div>
+
+<a href="https://t.me/bayrambabatv" class="telegram-button" target="_blank">Telegram Kanalımız</a>
+
+<script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+<script>
+  const player = videojs('videoPlayer');
+  const channelList = document.getElementById('channel-list');
+  const favoritesList = document.getElementById('favorites-list');
+  const themeToggle = document.getElementById('theme-toggle');
+
+  let channels = [];
+
+  function loadTheme() {
+    const theme = localStorage.getItem('theme') || 'dark';
+    document.body.className = theme + '-mode';
+    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+  }
+
+  function toggleTheme() {
+    const current = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.body.className = next + '-mode';
+    localStorage.setItem('theme', next);
+    themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+
+  themeToggle.onclick = toggleTheme;
+  loadTheme();
+
+  function getFavorites() {
+    return JSON.parse(localStorage.getItem('favorites') || '[]');
+  }
+
+  function setFavorites(favs) {
+    localStorage.setItem('favorites', JSON.stringify(favs));
+    renderFavorites();
+  }
+
+  function toggleFavorite(name) {
+    const favs = getFavorites();
+    const updated = favs.includes(name) ? favs.filter(n => n !== name) : [...favs, name];
+    setFavorites(updated);
+  }
+
+  function renderFavorites() {
+    const favs = getFavorites();
+    favoritesList.innerHTML = '';
+    favs.forEach(name => {
+      const chan = channels.find(c => c.name === name);
+      if (chan) {
+        const el = document.createElement('button');
+        el.textContent = chan.name;
+        el.onclick = () => playChannel(chan.url);
+        favoritesList.appendChild(el);
+      }
+    });
+  }
+
+  function renderChannels() {
+    channelList.innerHTML = '';
+    channels.forEach(channel => {
+      const card = document.createElement('div');
+      card.className = 'channel-card';
+      card.textContent = channel.name;
+
+      const favBtn = document.createElement('button');
+      favBtn.className = 'favorite-button';
+      favBtn.textContent = getFavorites().includes(channel.name) ? '★' : '☆';
+      favBtn.onclick = (e) => {
+        e.stopPropagation();
+        toggleFavorite(channel.name);
+        favBtn.textContent = getFavorites().includes(channel.name) ? '★' : '☆';
+      };
+
+      card.onclick = () => playChannel(channel.url);
+      card.appendChild(favBtn);
+      channelList.appendChild(card);
+    });
+  }
+
+  function playChannel(url) {
+    player.src({ src: url, type: 'application/x-mpegURL' });
+    player.play();
+  }
+
+  async function init() {
+    try {
+      const res = await fetch('channels.json');
+      channels = await res.json();
+      renderChannels();
+      renderFavorites();
+      if (channels.length) playChannel(channels[0].url);
+    } catch (e) {
+      console.error('Kanal listesi yüklenemedi:', e);
+    }
+  }
+
+  init();
+
+  // === GÜVENLİK ===
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if (
+      e.key === 'F12' ||
+      (e.ctrlKey && e.shiftKey && ['I', 'C', 'J'].includes(e.key)) ||
+      (e.ctrlKey && ['U', 'S'].includes(e.key))
+    ) {
+      e.preventDefault();
+      alert("Geliştirici araçları engellendi.");
+    }
+  });
+</script>
+</body>
+</html>
