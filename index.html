@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Box Sports</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="player/video-js.css" rel="stylesheet">
+  <link href="assets/style.css" rel="stylesheet">
+</head>
+<body>
+  <div id="loader" class="loader-overlay">
+    <video id="adVideo" muted autoplay></video>
+  </div>
+
+  <div class="topbar">
+    <h1>Box Sports</h1>
+    <button id="themeToggle">🌞</button>
+  </div>
+
+  <div class="container">
+    <aside class="channel-list">
+      <input type="text" id="search" placeholder="Kanal Ara...">
+      <div id="channelContainer"></div>
+    </aside>
+    <main class="player-container">
+      <video id="mainPlayer" class="video-js vjs-hidden" controls></video>
+    </main>
+  </div>
+
+  <footer>© 2025 Box Sports</footer>
+
+  <script src="player/video.min.js"></script>
+  <script src="assets/script.js"></script>
+</body>
+</html>
