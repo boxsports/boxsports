@@ -2,30 +2,7 @@ const player = videojs('videoPlayer');
 const channelsContainer = document.getElementById('channels');
 const searchInput = document.getElementById('search');
 
-const channels = [
-  { "name": "Bein Sports 1", "url": "https://bs.arectv33.sbs/static/bs1.m3u8" },
-  { "name": "Bein Sports 2", "url": "https://bs.arectv33.sbs/static/bs2.m3u8" },
-  { "name": "Bein Sports 3", "url": "https://bs.arectv33.sbs/static/bs3.m3u8" },
-  { "name": "Bein Sports 4", "url": "https://bs.arectv33.sbs/static/bs4.m3u8" },
-  { "name": "Bein Sports 5", "url": "https://bs.arectv33.sbs/static/bs5.m3u8" },
-  { "name": "Bein Sports Max 1", "url": "https://tv.arectv34.sbs/live/bm1.m3u8" },
-  { "name": "Bein Sports Max 2", "url": "https://tv.arectv34.sbs/live/bm2.m3u8" },
-  { "name": "S Sport 1", "url": "https://bs.arectv33.sbs/static/ss11.m3u8" },
-  { "name": "S Sport 2", "url": "https://bs.arectv33.sbs/static/ss2.m3u8" },
-  { "name": "Smart Spor 1", "url": "https://tv.arectv34.sbs/live/smart1.m3u8" },
-  { "name": "Smart Spor 2", "url": "https://tv.arectv34.sbs/live/smart2.m3u8" },
-  { "name": "Tivibu Spor 1", "url": "https://tv.arectv34.sbs/live/t1.m3u8" },
-  { "name": "Tivibu Spor 2", "url": "https://tv.arectv34.sbs/live/t2.m3u8" },
-  { "name": "Tabii Spor 0", "url": "https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master.m3u8" },
-  { "name": "Tabii Spor 1", "url": "https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master.m3u8" },
-  { "name": "Tabii Spor 2", "url": "https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master.m3u8" },
-  { "name": "Tabii Spor 3", "url": "https://ujnf69op16x2fiiywxcnx41q8.medya.trt.com.tr/master.m3u8" },
-  { "name": "Tabii Spor 4", "url": "https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master.m3u8" },
-  { "name": "Tabii Spor 5", "url": "https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master.m3u8" },
-  { "name": "Tabii Spor 6", "url": "https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master.m3u8" },
-  { "name": "Tabii TV", "url": "https://ceokzokgtd.erbvr.com/tabiitv/tabiitv.m3u8" },
-  { "name": "ATV", "url": "https://tv.arectv34.sbs/live/atv.m3u8" }
-];
+let channels = []; // JSON'dan yüklenecek
 
 function loadChannels(filter = '') {
   channelsContainer.innerHTML = '';
@@ -46,7 +23,18 @@ function loadChannels(filter = '') {
 searchInput.addEventListener('input', e => loadChannels(e.target.value));
 
 window.onload = () => {
-  loadChannels();
-  player.src({ type: 'application/x-mpegURL', src: channels[0].url });
-  player.play();
+  fetch('channels.json')
+    .then(response => response.json())
+    .then(data => {
+      channels = data;
+      loadChannels();
+      if (channels.length > 0) {
+        player.src({ type: 'application/x-mpegURL', src: channels[0].url });
+        player.play();
+      }
+    })
+    .catch(error => {
+      console.error("Kanal listesi yüklenemedi:", error);
+      channelsContainer.innerHTML = "<p>Kanallar yüklenemedi.</p>";
+    });
 };
