@@ -1,143 +1,162 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Box Sports</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://unpkg.com/video.js/dist/video-js.min.css" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://vjs.zencdn.net/8.5.2/video-js.css" rel="stylesheet" />
   <style>
-    :root {
-      --bg: #e3f2fd; --card: #fff; --text: #003366; --highlight: #90caf9;
-    }
-    body.dark {
-      --bg: #121212; --card: #1e1e1e; --text: #eee; --highlight: #1565c0;
-    }
     body {
-      margin: 0; font-family: sans-serif; background: var(--bg); color: var(--text); user-select: none;
+      margin: 0;
+      font-family: sans-serif;
+      background: linear-gradient(135deg, rgba(33,150,243,0.3), rgba(255,255,255,0.2));
+      backdrop-filter: blur(6px);
+      color: #003366;
+      display: flex;
+      flex-direction: column;
     }
-    .topbar { display: flex; justify-content: space-between; padding: 10px 20px; }
-    .container { display: flex; gap: 20px; padding: 20px; flex-wrap: wrap; }
-    .channel-list {
-      max-width: 300px; width: 100%;
-      background: var(--card); border-radius: 12px; padding: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1); max-height: 500px; overflow-y: auto;
+    .main {
+      display: flex;
+      flex-direction: row;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 260px;
+      background: rgba(255,255,255,0.6);
+      padding: 15px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      backdrop-filter: blur(8px);
+      overflow-y: auto;
     }
     .channel {
-      display: flex; justify-content: space-between; padding: 10px;
-      border-radius: 8px; background: var(--bg); margin-bottom: 8px;
-      cursor: pointer; transition: background 0.2s;
+      background: #e3f2fd;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
     }
-    .channel:hover { background: var(--highlight); color: #fff; }
-    .channel.active { background: var(--highlight); font-weight: bold; }
-    .fav-btn { cursor: pointer; font-size: 1.2em; }
-    .player-container { flex: 1; max-width: 720px; width: 100%; }
-    input[type="text"] {
-      width: 100%; padding: 8px;
-      border: 1px solid var(--highlight); border-radius: 6px; margin-bottom: 10px;
+    .channel:hover {
+      background: #bbdefb;
     }
-    footer { text-align: center; padding: 15px; }
-    .loader-overlay {
-      position: fixed; top: 0; left: 0; width:100%; height:100%;
-      background: rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center;
-      z-index:9999; flex-direction: column; color: white;
+    .content {
+      flex: 1;
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    .vjs-hidden { display: none !important; }
-    @media (max-width:768px) {
-      .container { flex-direction: column; align-items:center; }
-      .player-container { margin-top:20px; }
+    .video-container {
+      width: 100%;
+      max-width: 960px;
+    }
+    .video-js {
+      width: 100% !important;
+      height: auto !important;
+      aspect-ratio: 16 / 9;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+    }
+    .btn {
+      background: #90caf9;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    @media (max-width: 768px) {
+      .main {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .channel {
+        flex: 1 1 45%;
+        margin: 6px;
+      }
     }
   </style>
 </head>
-<body oncontextmenu="return false" onkeydown="return false;">
-  <div id="loader" class="loader-overlay">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Turkey_flag_300.png/240px-Turkey_flag_300.png" width="180">
-    <p>Reklam geçiyor... 5 saniye</p>
+<body>
+
+<div class="top-bar">
+  <button class="btn" onclick="toggleTheme()">Tema Değiştir</button>
+</div>
+
+<div class="main">
+  <div class="sidebar" id="channelList"></div>
+  <div class="content">
+    <div class="video-container">
+      <video id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto" poster="" data-setup='{}'>
+        <source src="" type="application/x-mpegURL" />
+        Tarayıcınız video etiketini desteklemiyor.
+      </video>
+    </div>
   </div>
+</div>
 
-  <div class="topbar">
-    <h1>Box Sports</h1>
-    <button id="themeToggle">🌞</button>
-  </div>
+<script src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
+<script>
+const channels = [
+  { "name": "Bein Sports 1", "url": "https://bs.arectv33.sbs/static/bs1.m3u8" },
+  { "name": "Bein Sports 2", "url": "https://bs.arectv33.sbs/static/bs2.m3u8" },
+  { "name": "Bein Sports 3", "url": "https://bs.arectv33.sbs/static/bs3.m3u8" },
+  { "name": "Bein Sports 4", "url": "https://bs.arectv33.sbs/static/bs4.m3u8" },
+  { "name": "Bein Sports 5", "url": "https://bs.arectv33.sbs/static/bs5.m3u8" },
+  { "name": "Bein Sports Max 1", "url": "https://tv.arectv34.sbs/live/bm1.m3u8" },
+  { "name": "Bein Sports Max 2", "url": "https://tv.arectv34.sbs/live/bm2.m3u8" },
+  { "name": "S Sport 1", "url": "https://bs.arectv33.sbs/static/ss11.m3u8" },
+  { "name": "S Sport 2", "url": "https://bs.arectv33.sbs/static/ss2.m3u8" },
+  { "name": "Smart Spor 1", "url": "https://tv.arectv34.sbs/live/smart1.m3u8" },
+  { "name": "Smart Spor 2", "url": "https://tv.arectv34.sbs/live/smart2.m3u8" },
+  { "name": "Tivibu Spor 1", "url": "https://tv.arectv34.sbs/live/t1.m3u8" },
+  { "name": "Tivibu Spor 2", "url": "https://tv.arectv34.sbs/live/t2.m3u8" },
+  { "name": "Tabii Spor 0", "url": "https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master.m3u8" },
+  { "name": "Tabii Spor 1", "url": "https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master.m3u8" },
+  { "name": "Tabii Spor 2", "url": "https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master.m3u8" },
+  { "name": "Tabii Spor 3", "url": "https://ujnf69op16x2fiiywxcnx41q8.medya.trt.com.tr/master.m3u8" },
+  { "name": "Tabii Spor 4", "url": "https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master.m3u8" },
+  { "name": "Tabii Spor 5", "url": "https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master.m3u8" },
+  { "name": "Tabii Spor 6", "url": "https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master.m3u8" },
+  { "name": "Tabii TV",    "url": "https://ceokzokgtd.erbvr.com/tabiitv/tabiitv.m3u8" },
+  { "name": "ATV", "url": "https://tv.arectv34.sbs/live/atv.m3u8" }
+];
 
-  <div class="container">
-    <aside class="channel-list">
-      <input type="text" id="search" placeholder="Kanal Ara..." />
-      <div id="channelContainer"></div>
-    </aside>
-    <main class="player-container">
-      <video id="mainPlayer" class="video-js vjs-hidden" controls></video>
-    </main>
-  </div>
+const player = videojs('videoPlayer');
+const listContainer = document.getElementById('channelList');
 
-  <footer>© 2025 Box Sports</footer>
+// Kanal listesi oluştur
+channels.forEach((ch) => {
+  const div = document.createElement('div');
+  div.className = 'channel';
+  div.innerText = ch.name;
+  div.onclick = () => {
+    player.src({ src: ch.url, type: 'application/x-mpegURL' });
+    player.play();
+  };
+  listContainer.appendChild(div);
+});
 
-  <script src="https://unpkg.com/video.js/dist/video.min.js"></script>
-  <script>
-    const channels = [
-      { name: "Bein Sports 1", url: "aHR0cHM6Ly9icy5hcmVjdHYzMy5zYnMvc3RhdGljL2JzMS5tM3U4" },
-      { name: "Bein Sports 2", url: "aHR0cHM6Ly9icy5hcmVjdHYzMy5zYnMvc3RhdGljL2JzMi5tM3U4" },
-      { name: "S Sport 1", url: "aHR0cHM6Ly9icy5hcmVjdHYzMy5zYnMvc3RhdGljL3NzMTEubTN1OA==" },
-      { name: "ATV", url: "aHR0cHM6Ly90di5hcmVjdHYzNC5zYnMvbGl2ZS9hdHYubTN1OA==" }
-    ];
-    const mainPlayer = videojs("mainPlayer");
-    const container = document.getElementById("channelContainer");
-    const search = document.getElementById("search");
-    const loader = document.getElementById("loader");
-    const themeToggle = document.getElementById("themeToggle");
+// Tema değiştir
+function toggleTheme() {
+  const body = document.body;
+  const isLight = body.style.background.includes('255,255,255');
+  body.style.background = isLight
+    ? 'linear-gradient(135deg, rgba(33,150,243,0.3), rgba(0,0,0,0.4))'
+    : 'linear-gradient(135deg, rgba(33,150,243,0.3), rgba(255,255,255,0.2))';
 
-    setTimeout(() => {
-      loader.style.display = "none";
-      document.querySelector(".vjs-hidden").classList.remove("vjs-hidden");
-      loadChannels();
-      playChannel(channels[0]);
-    }, 5000);
-
-    function atobUrl(b64) {
-      return atob(b64);
-    }
-
-    function loadChannels() {
-      container.innerHTML = "";
-      let favs = JSON.parse(localStorage.getItem("favs") || "[]");
-      let list = channels.slice().sort((a,b) => favs.includes(b.name) - favs.includes(a.name));
-      list.forEach((ch) => {
-        let d = document.createElement("div");
-        d.className = "channel";
-        d.innerHTML = `<span>${ch.name}</span><span class="fav-btn">${favs.includes(ch.name)?"★":"☆"}</span>`;
-        d.onclick = () => playChannel(ch, d);
-        d.querySelector(".fav-btn").onclick = (e) => {
-          e.stopPropagation();
-          if (favs.includes(ch.name)) favs = favs.filter(x => x !== ch.name);
-          else favs.push(ch.name);
-          localStorage.setItem("favs", JSON.stringify(favs));
-          loadChannels();
-        };
-        container.appendChild(d);
-      });
-      search.oninput = () => {
-        Array.from(container.children).forEach((el) => {
-          el.style.display = el.innerText.toLowerCase().includes(search.value.toLowerCase()) ? "flex" : "none";
-        });
-      };
-    }
-
-    function playChannel(ch, el) {
-      document.querySelectorAll(".channel").forEach((c) => c.classList.remove("active"));
-      el?.classList.add("active");
-      mainPlayer.src({ type: "application/x-mpegURL", src: atobUrl(ch.url) });
-    }
-
-    if (localStorage.getItem("theme") === "dark") {
-      document.body.classList.add("dark");
-      themeToggle.textContent = "🌙";
-    }
-
-    themeToggle.onclick = () => {
-      document.body.classList.toggle("dark");
-      const theme = document.body.classList.contains("dark") ? "dark" : "light";
-      themeToggle.textContent = theme === "dark" ? "🌙" : "🌞";
-      localStorage.setItem("theme", theme);
-    };
-  </script>
+  document.querySelectorAll('.sidebar, .channel').forEach(el => {
+    el.style.background = isLight ? '#222' : '#fff';
+    el.style.color = isLight ? '#fff' : '#003366';
+  });
+}
+</script>
 </body>
 </html>
