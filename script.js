@@ -2,7 +2,17 @@ const player = videojs('videoPlayer');
 const channelsContainer = document.getElementById('channels');
 const searchInput = document.getElementById('search');
 
-let channels = []; // JSON'dan yüklenecek
+// Örnek JSON formatında kanal listesi
+const channels = [
+  { name: 'BEIN SPORTS 1', url: 'https://example.com/bein1.m3u8' },
+  { name: 'BEIN SPORTS 2', url: 'https://example.com/bein2.m3u8' },
+  { name: 'BEIN SPORTS 3', url: 'https://example.com/bein3.m3u8' },
+  { name: 'BEIN SPORTS 4', url: 'https://example.com/bein4.m3u8' },
+  { name: 'BEIN SPORTS 5', url: 'https://example.com/bein5.m3u8' },
+  { name: 'BEIN SPORTS MAX 1', url: 'https://example.com/beinmax1.m3u8' },
+  { name: 'BEIN SPORTS MAX 2', url: 'https://example.com/beinmax2.m3u8' },
+  { name: 'S SPORT', url: 'https://example.com/ssport.m3u8' }
+];
 
 function loadChannels(filter = '') {
   channelsContainer.innerHTML = '';
@@ -22,19 +32,9 @@ function loadChannels(filter = '') {
 
 searchInput.addEventListener('input', e => loadChannels(e.target.value));
 
+// İlk kanal yüklensin
 window.onload = () => {
-  fetch('channels.json')
-    .then(response => response.json())
-    .then(data => {
-      channels = data;
-      loadChannels();
-      if (channels.length > 0) {
-        player.src({ type: 'application/x-mpegURL', src: channels[0].url });
-        player.play();
-      }
-    })
-    .catch(error => {
-      console.error("Kanal listesi yüklenemedi:", error);
-      channelsContainer.innerHTML = "<p>Kanallar yüklenemedi.</p>";
-    });
+  loadChannels();
+  player.src({ type: 'application/x-mpegURL', src: channels[0].url });
+  player.play();
 };
