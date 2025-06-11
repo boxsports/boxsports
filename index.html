@@ -237,7 +237,7 @@
             }
             if (channel.url === activeChannelUrl) return; // Aynı kanal tekrardan yüklenmesin
 
-            console.log(Yükleniyor: ${channel.name});
+            console.log(`Yükleniyor: ${channel.name}`);
 
             player.src({
                 src: channel.url,
@@ -257,7 +257,7 @@
         function populateChannelList(filteredChannels = channels) {
             channelListContainer.innerHTML = '';
             if (filteredChannels.length === 0) {
-                channelListContainer.innerHTML = <p class="text-center text-slate-500 p-4">Sonuç bulunamadı.</p>;
+                channelListContainer.innerHTML = `<p class="text-center text-slate-500 p-4">Sonuç bulunamadı.</p>`;
                 return;
             }
 
@@ -276,7 +276,7 @@
                     checkIcon.setAttribute("viewBox", "0 0 24 24");
                     checkIcon.setAttribute("fill", "currentColor");
                     checkIcon.classList.add("w-5", "h-5", "text-sky-400");
-                    checkIcon.innerHTML = <path fill-rule="evenodd" d="M10.28 15.28a.75.75 0 001.06 0l3.72-3.72a.75.75 0 10-1.06-1.06L11 13.19l-1.97-1.97a.75.75 0 00-1.06 1.06l2.31 2.31z" clip-rule="evenodd"/>;
+                    checkIcon.innerHTML = `<path fill-rule="evenodd" d="M10.28 15.28a.75.75 0 001.06 0l3.72-3.72a.75.75 0 10-1.06-1.06L11 13.19l-1.97-1.97a.75.75 0 00-1.06 1.06l2.31 2.31z" clip-rule="evenodd"/>`;
                     button.prepend(checkIcon);
                 }
 
@@ -299,7 +299,7 @@
                         checkIcon.setAttribute("viewBox", "0 0 24 24");
                         checkIcon.setAttribute("fill", "currentColor");
                         checkIcon.classList.add("w-5", "h-5", "text-sky-400");
-                        checkIcon.innerHTML = <path fill-rule="evenodd" d="M10.28 15.28a.75.75 0 001.06 0l3.72-3.72a.75.75 0 10-1.06-1.06L11 13.19l-1.97-1.97a.75.75 0 00-1.06 1.06l2.31 2.31z" clip-rule="evenodd"/>;
+                        checkIcon.innerHTML = `<path fill-rule="evenodd" d="M10.28 15.28a.75.75 0 001.06 0l3.72-3.72a.75.75 0 10-1.06-1.06L11 13.19l-1.97-1.97a.75.75 0 00-1.06 1.06l2.31 2.31z" clip-rule="evenodd"/>`;
                         btn.prepend(checkIcon);
                     }
                 } else {
