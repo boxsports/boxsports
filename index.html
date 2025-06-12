@@ -12,6 +12,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+    <!-- Google Analytics (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GL63WQYYLH"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-GL63WQYYLH');
+    </script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -43,14 +51,18 @@
             backdrop-filter: blur(4px);
         }
         .vjs-big-play-button {
-            background-color: rgba(30, 144, 255, 0.5) !important;
+            background-color: rgba(30, 144, 255, 0.7) !important;
             border-color: rgba(30, 144, 255, 0.8) !important;
             border-radius: 50%;
-            width: 2em !important;
-            height: 2em !important;
-            line-height: 2em !important;
-            margin-top: -1em !important;
-            margin-left: -1em !important;
+            width: 2.5em !important;
+            height: 2.5em !important;
+            line-height: 2.5em !important;
+            margin-top: -1.25em !important;
+            margin-left: -1.25em !important;
+            transition: background-color 0.3s ease;
+        }
+        .vjs-big-play-button:hover {
+            background-color: rgba(30, 144, 255, 0.9) !important;
         }
         .vjs-loading-spinner {
             border-top-color: #1e90ff !important;
@@ -67,13 +79,13 @@
             z-index: 10;
             color: white;
             background-color: rgba(0, 0, 0, 0.5);
-            padding: 5px 15px;
+            padding: 6px 18px;
             border-radius: 8px;
             font-weight: 900;
-            font-size: 1.25rem;
-            letter-spacing: 0.05em;
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-            opacity: 0.8;
+            font-size: 1.5rem;
+            letter-spacing: 0.07em;
+            text-shadow: 1.5px 1.5px 7px rgba(0, 0, 0, 0.8);
+            opacity: 0.85;
             pointer-events: none;
             user-select: none;
         }
@@ -85,15 +97,16 @@
             left: 20px;
             z-index: 10;
             color: white;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 8px 16px;
+            background-color: rgba(0, 0, 0, 0.65);
+            padding: 10px 18px;
             border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.25rem;
+            font-weight: 700;
             transition: opacity 0.5s ease-in-out;
             opacity: 0;
             pointer-events: none;
             user-select: none;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
         }
         .vjs-channel-title.visible {
             opacity: 1;
@@ -102,17 +115,34 @@
         /* Channel button */
         #channel-list button {
             transition: background-color 0.25s, color 0.25s;
+            font-weight: 600;
         }
         #channel-list button:hover:not(.active) {
             background-color: #1e293b; /* slate-800 */
             color: #94a3b8; /* slate-400 */
         }
         #channel-list button.active {
-            background-color: rgba(30, 144, 255, 0.2);
+            background-color: rgba(30, 144, 255, 0.3);
             color: #38bdf8; /* sky-400 */
         }
         #channel-list button.active svg {
             color: #38bdf8 !important;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 768px) {
+            aside {
+                width: 100% !important;
+                height: 300px;
+                border-right: none;
+                border-bottom: 1px solid #334155;
+            }
+            #app {
+                flex-direction: column;
+            }
+            main {
+                height: calc(100vh - 300px);
+            }
         }
     </style>
 </head>
@@ -123,7 +153,7 @@
     <!-- Sidebar -->
     <aside class="w-full md:w-72 lg:w-80 bg-slate-900 border-r border-slate-800 flex flex-col">
         <div class="p-4 border-b border-slate-800 flex items-center justify-between">
-            <h1 class="text-2xl font-black text-white tracking-wider">BOX SPORTS</h1>
+            <h1 class="text-2xl font-black text-white tracking-wider select-none">BOX SPORTS</h1>
         </div>
         <div class="p-3">
             <input
@@ -132,12 +162,13 @@
                 aria-label="Kanal ara"
                 placeholder="Kanal ara..."
                 class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
+                autocomplete="off"
             />
         </div>
-        <nav id="channel-list" class="flex-1 p-2 space-y-1 overflow-y-auto custom-scrollbar" role="list">
+        <nav id="channel-list" class="flex-1 p-2 space-y-1 overflow-y-auto custom-scrollbar" role="list" aria-label="Kanal Listesi">
             <!-- Kanallar JS ile yüklenecek -->
         </nav>
-        <div class="p-4 border-t border-slate-800">
+        <div class="p-4 border-t border-slate-800 select-none">
             <h3 class="text-sm font-semibold text-sky-400 mb-2">DUYURU PANOSU</h3>
             <p class="text-xs text-slate-400 mb-4">Yeni kanallar eklendi ve sistem performansı iyileştirildi. Keyifli seyirler!</p>
             <a
@@ -169,6 +200,7 @@
                 preload="auto"
                 playsinline
                 muted
+                poster="https://via.placeholder.com/1280x720/000000/1e90ff?text=BOX+SPORTS+Loading"
             ></video>
             <div class="road-sports-logo" aria-hidden="true">BOX SPORTS</div>
             <div id="channel-title-overlay" class="vjs-channel-title" aria-live="polite" aria-atomic="true"></div>
@@ -200,138 +232,120 @@
             { name: "Tabii Spor 3", url: "https://ujnf69op16x2fiiywxcnx41q8.medya.trt.com.tr/master.m3u8" },
             { name: "Tabii Spor 4", url: "https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master.m3u8" },
             { name: "Tabii Spor 5", url: "https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master.m3u8" },
-            { name: "Tabii Spor 6", url: "https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master.m3u8" },
-            { name: "Tabii TV", url: "https://ceokzokgtd.erbvr.com/tabiitv/tabiitv.m3u8" },
-            { name: "ATV", url: "https://tv.arectv34.sbs/live/atv.m3u8" }
+            { name: "Tabii Spor 6", url: "https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master.m3u8" }
+            { name: "TV 8", url: "https://tv8.daioncdn.net/tv8/tv8.m3u8?app=7ddc255a-ef47-4e81-ab14-c0e5f2949788&ce=3&ppid=9ada47b261acdd92cb8bf105503d4ede&dfp_paln=AQzzBGQET_P-ZTGsz2n15Xy6Lp6j6Wrjp_GVxHw4IKw7fdQo9rcJJvZPzSwvufvb-vWmXQR82R8IFPJX7QameknMtVH14dnECiCGw2EfADRgwKBeuDwaw_y9bBoSsoXjCBl8j82saqBmFDW6DVe9uXzS1zfhSmIHOt_SDFNv6JN84S5_y0gFeu3oVnrbgVR_6DPC9t2zIo9KZI3ztqQfdG0svrTZXul094zE7xid_viUuNDBx12TRZ50_U3VsN8DQYoy-RUTtmd9ZtZTOuaPiI7AuqOl_5a0MqRAcvHLZuKqHjVhJWxF6mtlSY6ezV5mGajKTztc5R04pTs5nDpNdGjVTFLzdd1I-Aq4E8PKBkGyolV2c6tQSFEZq9brFtHiP6C6zE2PT4QIBlDuJDIHNJWGmhBHivJPGRYsZN2VxBsYftOD6TjOdKVA78m5HNNSaVhEj9uaZd9Y192Dmt2ELN9b1DkDMKIRlR5nWfnyu76JyzMOdRiWxwvXSnldzxjWzO3S6IV9nuLT2GeVnd64gTFJGQ6TrPbnlIzkB4Caos5EY9pXXcVc02Dvf_eYE9-t50M97bp8PPu_3RE9X-U_smGVcrqH4-r99fC3EexyDsIUrlstjWc0v5kWoDvb8MHqYIZ3FEi-0dSwnoN0f8XSd1bOObgpYO2fCDlmgHBMdU7zrrkfX0nMxlJqVuTWUKvHqOCQLY4yaSxbuIL9XbIWuyl6TPqoTEjTvq-owG5W5xRPofqmrIdWgS8Z1qbjaObQ9ylbj_uJmlOBk2TqjbQOE6L4a02rZbEufTT9Yh_NnsMTZ9axx9qRXNWRRMT5OBmBr6vaqDBNAlUXBAgndX5YVjGT5Pu3VKz2bnuqWEiWUppJN04BBxffbKs-r-3CSuvwPVjPLiDyx-6zb4zpOK8SwZWRrgj8XAovFEBdU8nwbdu33h9zKUR7rGmYG835cICWwPxOvkqmMKVItMnwYfllZkjxtejqCl_Zeiwo8Y2Gkj9c4goG6a96bcAiSjsssa6VOdB3-cVNXPO2nLZA-ThRvZqXXje6ZkF39bsxLmpEB-1l4ys5vcdR78kniB9lGKjcp3IsERiEMjT_wjkV2XBJZVYtFawETxypZj0vdqnvO1Qov5aTPB0RtN0" }
         ];
 
-        const channelListContainer = document.getElementById('channel-list');
+        const channelListEl = document.getElementById('channel-list');
         const searchInput = document.getElementById('search-input');
         const channelTitleOverlay = document.getElementById('channel-title-overlay');
-
-        let player;
         let activeChannelUrl = null;
-        let titleHideTimeout = null;
+        let titleTimeout = null;
 
-        player = videojs('video-player', {
-            autoplay: true,
+        // Video.js player init
+        const player = videojs('video-player', {
+            autoplay: false,
+            controls: true,
             fluid: true,
             liveui: true,
-            muted: true,  // autoplay için mute ekledim
-            playsinline: true
+            muted: true,
+            playsinline: true,
+            preload: 'auto'
         });
 
-        function showChannelTitle(title) {
-            clearTimeout(titleHideTimeout);
-            channelTitleOverlay.textContent = title;
-            channelTitleOverlay.classList.add('visible');
-            titleHideTimeout = setTimeout(() => {
-                channelTitleOverlay.classList.remove('visible');
-            }, 4000);
-        }
+        // Kanal listesini oluştur
+        function populateChannelList(filter = "") {
+            channelListEl.innerHTML = "";
+            const filteredChannels = channels.filter(ch => ch.name.toLowerCase().includes(filter.toLowerCase()));
 
-        function loadChannel(channel) {
-            if (!channel || !channel.url) {
-                console.error("Geçersiz kanal objesi");
-                return;
-            }
-            if (channel.url === activeChannelUrl) return; // Aynı kanal tekrardan yüklenmesin
-
-            console.log(`Yükleniyor: ${channel.name}`);
-
-            player.src({
-                src: channel.url,
-                type: 'application/x-mpegURL'
-            });
-            player.play().catch(e => {
-                console.warn("Oynatma engellendi, sessiz modda başlatılıyor.");
-                player.muted(true);
-                player.play();
-            });
-
-            showChannelTitle(channel.name);
-            activeChannelUrl = channel.url;
-            updateActiveClass();
-        }
-
-        function populateChannelList(filteredChannels = channels) {
-            channelListContainer.innerHTML = '';
             if (filteredChannels.length === 0) {
-                channelListContainer.innerHTML = `<p class="text-center text-slate-500 p-4">Sonuç bulunamadı.</p>`;
+                channelListEl.innerHTML = `<p class="text-center text-slate-500 mt-6 select-none">Kanal bulunamadı.</p>`;
                 return;
             }
 
             filteredChannels.forEach(channel => {
-                const button = document.createElement('button');
-                button.className = "w-full text-left p-3 rounded-lg hover:bg-slate-800 transition flex items-center space-x-3";
-                button.type = "button";
-                button.textContent = channel.name;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = channel.name;
+                btn.setAttribute('aria-label', `${channel.name} kanalını oynat`);
+                btn.className = "w-full text-left p-3 rounded-lg hover:bg-slate-800 transition flex items-center";
 
-                // Aktif kanal butonu style
                 if (channel.url === activeChannelUrl) {
-                    button.classList.add('active');
-                    // İkon ekle (check)
-                    const checkIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                    checkIcon.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-                    checkIcon.setAttribute("viewBox", "0 0 24 24");
-                    checkIcon.setAttribute("fill", "currentColor");
-                    checkIcon.classList.add("w-5", "h-5", "text-sky-400");
-                    checkIcon.innerHTML = `<path fill-rule="evenodd" d="M10.28 15.28a.75.75 0 001.06 0l3.72-3.72a.75.75 0 10-1.06-1.06L11 13.19l-1.97-1.97a.75.75 0 00-1.06 1.06l2.31 2.31z" clip-rule="evenodd"/>`;
-                    button.prepend(checkIcon);
+                    btn.classList.add('active');
                 }
 
-                button.addEventListener('click', () => loadChannel(channel));
+                btn.addEventListener('click', () => {
+                    if (channel.url === activeChannelUrl) return;
+                    player.src({ src: channel.url, type: 'application/x-mpegURL' });
+                    player.play().catch(() => {
+                        player.muted(true);
+                        player.play();
+                    });
+                    activeChannelUrl = channel.url;
+                    updateActiveButton();
+                    showChannelTitle(channel.name);
+                });
 
-                channelListContainer.appendChild(button);
+                channelListEl.appendChild(btn);
             });
         }
 
-        function updateActiveClass() {
-            const buttons = channelListContainer.querySelectorAll('button');
+        // Aktif kanal butonunu güncelle
+        function updateActiveButton() {
+            const buttons = channelListEl.querySelectorAll('button');
             buttons.forEach(btn => {
-                if (btn.textContent === null) return;
-                if (channels.find(ch => ch.name === btn.textContent)?.url === activeChannelUrl) {
+                if (btn.textContent && channels.find(ch => ch.name === btn.textContent)?.url === activeChannelUrl) {
                     btn.classList.add('active');
-                    if (!btn.querySelector('svg')) {
-                        // check icon yoksa ekle
-                        const checkIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                        checkIcon.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-                        checkIcon.setAttribute("viewBox", "0 0 24 24");
-                        checkIcon.setAttribute("fill", "currentColor");
-                        checkIcon.classList.add("w-5", "h-5", "text-sky-400");
-                        checkIcon.innerHTML = `<path fill-rule="evenodd" d="M10.28 15.28a.75.75 0 001.06 0l3.72-3.72a.75.75 0 10-1.06-1.06L11 13.19l-1.97-1.97a.75.75 0 00-1.06 1.06l2.31 2.31z" clip-rule="evenodd"/>`;
-                        btn.prepend(checkIcon);
-                    }
                 } else {
                     btn.classList.remove('active');
-                    const svgIcon = btn.querySelector('svg');
-                    if (svgIcon) svgIcon.remove();
                 }
             });
         }
 
-        // Arama filtresi
+        // Kanal başlığını göster
+        function showChannelTitle(title) {
+            if (titleTimeout) clearTimeout(titleTimeout);
+            channelTitleOverlay.textContent = title;
+            channelTitleOverlay.classList.add('visible');
+            titleTimeout = setTimeout(() => {
+                channelTitleOverlay.classList.remove('visible');
+            }, 4000);
+        }
+
+        // Arama inputu
         searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase().trim();
-            const filtered = channels.filter(ch => ch.name.toLowerCase().includes(term));
-            populateChannelList(filtered);
+            populateChannelList(e.target.value.trim());
         });
 
-        // İlk kanal yüklemesi
-        if (channels.length > 0) {
-            loadChannel(channels[0]);
-        }
+        // İlk yüklemede listeyi ve ilk kanalı göster
         populateChannelList();
+        if (channels.length > 0) {
+            player.src({ src: channels[0].url, type: 'application/x-mpegURL' });
+            player.play().catch(() => player.muted(true).play());
+            activeChannelUrl = channels[0].url;
+            updateActiveButton();
+            showChannelTitle(channels[0].name);
+        }
 
-        // Klavye kısayolu: Arama kutusuna odaklanmak için "/"
-        document.addEventListener('keydown', e => {
-            if (e.key === '/') {
+        // Basit geliştirici araçlarını engelleme (F12 ve sağ tık engelleme)
+        document.addEventListener('keydown', function(e) {
+            // F12, Ctrl+Shift+I/J/C
+            if (
+                e.key === 'F12' ||
+                (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
+                (e.ctrlKey && e.key.toUpperCase() === 'U')
+            ) {
                 e.preventDefault();
-                searchInput.focus();
             }
+        });
+
+        // Sağ tıklama engelleme
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
         });
     });
 </script>
 
 </body>
 </html>
+ 
