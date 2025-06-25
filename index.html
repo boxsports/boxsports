@@ -246,9 +246,21 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const channels = [
+        { name: "Bein Sports 1", url: "https://bs.arectv33.sbs/static/bs1.m3u8" },
+        { name: "Bein Sports 2", url: "https://bs.arectv33.sbs/static/bs2.m3u8" },
+        { name: "Bein Sports 3", url: "https://bs.arectv33.sbs/static/bs3.m3u8" },
+        { name: "Bein Sports 4", url: "https://bs.arectv33.sbs/static/bs4.m3u8" },
+        { name: "Bein Sports 5", url: "https://bs.arectv33.sbs/static/bs5.m3u8" },
+        { name: "Bein Sports Max 1", url: "https://tv.arectv34.sbs/live/bm1.m3u8" },
+        { name: "Bein Sports Max 2", url: "https://tv.arectv34.sbs/live/bm2.m3u8" },
+        { name: "S Sport 1", url: "https://bs.arectv33.sbs/static/ss11.m3u8" },
+        { name: "S Sport 2", url: "https://bs.arectv33.sbs/static/ss2.m3u8" },
+        { name: "Smart Spor 1", url: "https://tv.arectv34.sbs/live/smart1.m3u8" },
+        { name: "Smart Spor 2", url: "https://tv.arectv34.sbs/live/smart2.m3u8" },
+        { name: "Tivibu Spor 1", url: "https://tv.arectv34.sbs/live/t1.m3u8" },
+        { name: "TRT 1", url: "https://trt.daioncdn.net/trt-1/master.m3u8?app=web" },
         { name: "TRT SPOR", url: "https://tv-trtspor1.medya.trt.com.tr/master_720.m3u8" }
-        { name: "TRT 1", url: "https://trt.daioncdn.net/trt-1/master.m3u8?app=web" }
-        ];
+      ];
 
       // Favori kanallar localStorage'da
       let favorites = JSON.parse(localStorage.getItem('bs_favorites') || "[]");
