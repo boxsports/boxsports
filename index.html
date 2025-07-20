@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Emrah Baba Saldı 🔥</title>
+<title>Emrah Baba Saldı 🔥 Telegram: @boxsportsx</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Orbitron:wght@400;700;800&display=swap" rel="stylesheet">
@@ -28,6 +28,51 @@
     user-select: none; /* Metin seçmeyi engelle */
   }
 
+  /* Arka plan animasyonları için elementler */
+  .background-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1; /* İçeriğin arkasında kalması için */
+  }
+
+  .background-animation::before,
+  .background-animation::after {
+    content: '';
+    position: absolute;
+    background: rgba(0, 255, 255, 0.1); /* Hafif neon mavi parçacıklar */
+    border-radius: 50%;
+    animation: moveParticles 15s infinite linear;
+  }
+
+  .background-animation::before {
+    width: 150px;
+    height: 150px;
+    left: -50px;
+    top: 10%;
+    animation-delay: 0s;
+  }
+
+  .background-animation::after {
+    width: 100px;
+    height: 100px;
+    right: -50px;
+    bottom: 20%;
+    animation-delay: 5s;
+  }
+
+  @keyframes moveParticles {
+    0% { transform: translate(0, 0) scale(1); opacity: 0.1; }
+    25% { transform: translate(100px, 50px) scale(1.1); opacity: 0.15; }
+    50% { transform: translate(200px, 0) scale(1.2); opacity: 0.2; }
+    75% { transform: translate(100px, -50px) scale(1.1); opacity: 0.15; }
+    100% { transform: translate(0, 0) scale(1); opacity: 0.1; }
+  }
+
+
   /* Ana İçerik Kutusu */
   .container {
     background: rgba(0, 0, 0, 0.7); /* Yarı şeffaf siyah kutu */
@@ -39,11 +84,13 @@
     text-align: center;
     border: 2px solid rgba(0, 255, 255, 0.5); /* Hafif çerçeve */
     animation: pulse 2s infinite alternate; /* Hafif parlama animasyonu */
+    backdrop-filter: blur(8px); /* Cam efekti */
+    -webkit-backdrop-filter: blur(8px);
   }
 
   @keyframes pulse {
-    0% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.7); }
-    100% { box-shadow: 0 0 55px rgba(0, 255, 255, 1); }
+    0% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.7), 0 0 0 0 rgba(0, 255, 255, 0.3); }
+    100% { box-shadow: 0 0 55px rgba(0, 255, 255, 1), 0 0 20px 10px rgba(0, 255, 255, 0); }
   }
 
   /* Başlık */
@@ -76,6 +123,28 @@
     line-height: 1.6;
   }
 
+  /* Telegram Link Butonu */
+  .telegram-button {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 15px 30px;
+    background: linear-gradient(90deg, #00b0ff, #006064); /* Telegram mavisi gradyan */
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-decoration: none;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 176, 255, 0.6);
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  }
+
+  .telegram-button:hover {
+    background: linear-gradient(90deg, #0099e6, #004d50);
+    box-shadow: 0 8px 25px rgba(0, 176, 255, 0.8);
+    transform: translateY(-3px);
+  }
+
   /* Responsive Ayarlar */
   @media (max-width: 768px) {
     .container {
@@ -87,6 +156,10 @@
     }
     p {
       font-size: 1.1rem;
+    }
+    .telegram-button {
+        font-size: 1rem;
+        padding: 12px 25px;
     }
   }
 
@@ -102,15 +175,19 @@
 </head>
 <body oncontextmenu="return false;" onkeydown="return blockDevTools(event)">
 
-<div class="container">
+<div class="background-animation"></div> <div class="container">
   <h1>EMRAH BABA SALDI 🔥</h1>
   <p>
-    Kanalımız kapatıldı ARTIK PİYASADA YOKUZ İYİ GÜNLER DİLERİZ<br>
-    Bizi takipte kalın!
+    Kanalımız kapatıldı. <br>
+    ARTIK PİYASADA YOKUZ.<br>
+    Hepinize iyi günler dileriz.<br>
   </p>
   <p style="font-size: 1rem; color: rgba(224, 230, 240, 0.7);">
-   BU YOLDAN BİR EMRAH ÇAVUŞOĞLU GEÇTİ
+   BU YOLDAN BİR EMRAH ÇAVUŞOĞLU GEÇTİ.
   </p>
+  <a href="https://t.me/boxsportsx" target="_blank" class="telegram-button">
+    Telegram Kanalımız İçin Tıkla!
+  </a>
 </div>
 
 <script>
