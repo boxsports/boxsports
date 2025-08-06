@@ -3,17 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Box Sports</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Box Sports - M3U Player</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12"></script>
     <style>
         :root {
-            --grant-peach: #ffb74d;
-            --dark-background: #1c1c1e;
-            --secondary-dark: #2c2c2e;
-            --text-color: #f0f0f0;
+            /* Gündüz Modu (Varsayılan) */
+            --primary-color: #2196F3;
+            --secondary-color: #f5f5f5;
+            --background-color: #ffffff;
+            --text-color: #212121;
+            --card-bg: #e0e0e0;
+            --input-bg: #e0e0e0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode {
+            /* Gece Modu */
+            --primary-color: #0d47a1;
+            --secondary-color: #121212;
+            --background-color: #212121;
+            --text-color: #f5f5f5;
+            --card-bg: #2c2c2c;
             --input-bg: #3a3a3c;
-            --input-border: #4a4a4c;
             --shadow-color: rgba(0, 0, 0, 0.4);
         }
 
@@ -21,25 +33,26 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--dark-background);
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--background-color);
             color: var(--text-color);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
-            overflow: hidden;
+            overflow-x: hidden;
             user-select: none;
         }
 
         .container {
             width: 100%;
             max-width: 900px;
-            background-color: var(--secondary-dark);
+            background-color: var(--card-bg);
             border-radius: 20px;
             box-shadow: 0 10px 30px var(--shadow-color);
             padding: 40px;
@@ -47,28 +60,102 @@
             animation: fadeIn 1s ease-in-out;
         }
 
-        h1 {
-            color: var(--grant-peach);
-            font-size: 2.5rem;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
-        #m3u-select, #m3u-input {
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-switch {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .switch-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 28px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        #m3u-select {
             width: 100%;
             padding: 15px;
             margin-bottom: 20px;
-            border: 2px solid var(--input-border);
+            border: 2px solid transparent;
             border-radius: 10px;
             background-color: var(--input-bg);
             color: var(--text-color);
             font-size: 1rem;
             transition: border-color 0.3s ease;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232196F3%22%20d%3D%22M287%20164.2l-149%20149c-4.4%204.4-11.4%204.4-15.8%200l-149-149c-4.4-4.4-4.4-11.4%200-15.8l20.4-20.4c4.4-4.4%2011.4-4.4%2015.8%200l113.8%20113.8%20113.8-113.8c4.4-4.4%2011.4-4.4%2015.8%200l20.4%2020.4c4.4%204.4%204.4%2011.4%200%2015.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: 12px auto;
+        }
+        body.dark-mode #m3u-select {
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%230d47a1%22%20d%3D%22M287%20164.2l-149%20149c-4.4%204.4-11.4%204.4-15.8%200l-149-149c-4.4-4.4-4.4-11.4%200-15.8l20.4-20.4c4.4-4.4%2011.4-4.4%2015.8%200l113.8%20113.8%20113.8-113.8c4.4-4.4%2011.4-4.4%2015.8%200l20.4%2020.4c4.4%204.4%204.4%2011.4%200%2015.8z%22%2F%3E%3C%2Fsvg%3E');
         }
 
-        #m3u-select:focus, #m3u-input:focus {
+
+        #m3u-select:focus {
             outline: none;
-            border-color: var(--grant-peach);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-color);
         }
 
         #load-button {
@@ -76,28 +163,29 @@
             padding: 15px;
             font-size: 1.2rem;
             font-weight: 600;
-            color: var(--dark-background);
-            background: var(--grant-peach);
+            color: #ffffff;
+            background: var(--primary-color);
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
             text-transform: uppercase;
         }
 
         #load-button:hover {
-            background: #ffc947;
+            background-color: #1976D2;
             transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         #player-container {
             width: 100%;
             height: 500px;
             margin-top: 30px;
-            background-color: var(--dark-background);
+            background-color: var(--card-bg);
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -106,6 +194,24 @@
         #video-player {
             width: 100%;
             height: 100%;
+            background-color: black;
+        }
+
+        .telegram-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: #0088CC;
+            color: #ffffff;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .telegram-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         @keyframes fadeIn {
@@ -114,8 +220,12 @@
         }
 
         @media (max-width: 768px) {
-            h1 {
+            .header {
+                flex-direction: column;
+            }
+            .header h1 {
                 font-size: 2rem;
+                margin-bottom: 15px;
             }
             .container {
                 padding: 20px;
@@ -129,7 +239,17 @@
 <body>
 
     <div class="container">
-        <h1>Box Sports </h1>
+        <div class="header">
+            <h1>Box Sports</h1>
+            <div class="theme-switch" id="theme-toggle">
+                <span class="switch-icon">🌙</span>
+                <label class="switch">
+                    <input type="checkbox" id="mode-toggle">
+                    <span class="slider"></span>
+                </label>
+                <span class="switch-icon">☀️</span>
+            </div>
+        </div>
         
         <select id="m3u-select">
             <option value="">Bir maç seçin...</option>
@@ -140,10 +260,12 @@
         <div id="player-container">
             <video id="video-player" controls></video>
         </div>
+
+        <a href="https://t.me/boxsportsx" target="_blank" class="telegram-button">Telegram Grubumuza Katıl</a>
     </div>
 
     <script>
-        // F12 tuşunu ve sağ tık menüsünü engelleme
+        // F12 ve sağ tık menüsünü engelleme
         document.addEventListener('keydown', function(event) {
             if (event.key === 'F12' || (event.ctrlKey && event.shiftKey && event.key === 'I')) {
                 event.preventDefault();
@@ -157,7 +279,28 @@
         const m3uSelect = document.getElementById('m3u-select');
         const loadButton = document.getElementById('load-button');
         const videoPlayer = document.getElementById('video-player');
+        const modeToggle = document.getElementById('mode-toggle');
+        const body = document.body;
 
+        // Tema ayarını kaydetme ve yükleme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+            modeToggle.checked = true;
+        }
+
+        // Tema değiştirme işlevi
+        modeToggle.addEventListener('change', () => {
+            if (modeToggle.checked) {
+                body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Oynatıcı işlevi
         loadButton.addEventListener('click', () => {
             const m3uUrl = m3uSelect.value;
             if (m3uUrl) {
