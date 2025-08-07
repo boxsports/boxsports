@@ -3,26 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Box Sports </title>
+    <title>Box Sports 🏆</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12"></script>
     <style>
         :root {
-            /* Gündüz Modu (Varsayılan) */
-            --primary-color: #2196F3;
-            --secondary-color: #f5f5f5;
-            --background-color: #ffffff;
-            --text-color: #212121;
-            --card-bg: #e0e0e0;
-            --input-bg: #e0e0e0;
+            --primary-color: #007BFF;
+            --secondary-color: #e9ecef;
+            --background-color: #f8f9fa;
+            --text-color: #212529;
+            --card-bg: #ffffff;
+            --input-bg: #f1f1f1;
             --shadow-color: rgba(0, 0, 0, 0.1);
         }
 
         body.dark-mode {
-            /* Gece Modu */
             --primary-color: #0d47a1;
-            --secondary-color: #121212;
-            --background-color: #212121;
+            --secondary-color: #212121;
+            --background-color: #121212;
             --text-color: #f5f5f5;
             --card-bg: #2c2c2c;
             --input-bg: #3a3a3c;
@@ -46,7 +44,6 @@
             min-height: 100vh;
             padding: 20px;
             overflow-x: hidden;
-            user-select: none;
         }
 
         .container {
@@ -81,7 +78,8 @@
 
         .switch-icon {
             font-size: 1.5rem;
-            margin-right: 10px;
+            margin: 0 5px;
+            color: var(--primary-color);
         }
         
         .switch {
@@ -129,33 +127,51 @@
             transform: translateX(22px);
         }
 
+        .live-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #dc3545;
+        }
+
+        .live-status .dot {
+            height: 12px;
+            width: 12px;
+            background-color: #dc3545;
+            border-radius: 50%;
+            margin-right: 10px;
+            animation: pulse 1.5s infinite;
+        }
+
         #m3u-select {
             width: 100%;
             padding: 15px;
             margin-bottom: 20px;
-            border: 2px solid transparent;
+            border: 2px solid var(--primary-color);
             border-radius: 10px;
             background-color: var(--input-bg);
             color: var(--text-color);
             font-size: 1rem;
-            transition: border-color 0.3s ease;
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232196F3%22%20d%3D%22M287%20164.2l-149%20149c-4.4%204.4-11.4%204.4-15.8%200l-149-149c-4.4-4.4-4.4-11.4%200-15.8l20.4-20.4c4.4-4.4%2011.4-4.4%2015.8%200l113.8%20113.8%20113.8-113.8c4.4-4.4%2011.4-4.4%2015.8%200l20.4%2020.4c4.4%204.4%204.4%2011.4%200%2015.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007BFF%22%20d%3D%22M287%20164.2l-149%20149c-4.4%204.4-11.4%204.4-15.8%200l-149-149c-4.4-4.4-4.4-11.4%200-15.8l20.4-20.4c4.4-4.4%2011.4-4.4%2015.8%200l113.8%20113.8%20113.8-113.8c4.4-4.4%2011.4-4.4%2015.8%200l20.4%2020.4c4.4%204.4%204.4%2011.4%200%2015.8z%22%2F%3E%3C%2Fsvg%3E');
             background-repeat: no-repeat;
-            background-position: right 15px top 50%;
+            background-position: right 15px center;
             background-size: 12px auto;
         }
+        
         body.dark-mode #m3u-select {
             background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%230d47a1%22%20d%3D%22M287%20164.2l-149%20149c-4.4%204.4-11.4%204.4-15.8%200l-149-149c-4.4-4.4-4.4-11.4%200-15.8l20.4-20.4c4.4-4.4%2011.4-4.4%2015.8%200l113.8%20113.8%20113.8-113.8c4.4-4.4%2011.4-4.4%2015.8%200l20.4%2020.4c4.4%204.4%204.4%2011.4%200%2015.8z%22%2F%3E%3C%2Fsvg%3E');
         }
 
-
         #m3u-select:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
         }
 
         #load-button {
@@ -173,7 +189,7 @@
         }
 
         #load-button:hover {
-            background-color: #1976D2;
+            background-color: #0056b3;
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
@@ -195,6 +211,12 @@
             width: 100%;
             height: 100%;
             background-color: black;
+        }
+
+        #live-user-count {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
 
         .telegram-button {
@@ -219,6 +241,12 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -240,7 +268,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>Box Sports</h1>
+            <h1>Box Sports <span role="img" aria-label="trophy">🏆</span></h1>
             <div class="theme-switch" id="theme-toggle">
                 <span class="switch-icon">🌙</span>
                 <label class="switch">
@@ -249,6 +277,11 @@
                 </label>
                 <span class="switch-icon">☀️</span>
             </div>
+        </div>
+        
+        <div class="live-status">
+            <span class="dot"></span>
+            <span>CANLI YAYIN</span>
         </div>
         
         <select id="m3u-select">
@@ -261,10 +294,19 @@
             <video id="video-player" controls></video>
         </div>
 
-        <a href="https://t.me/boxsportsx" target="_blank" class="telegram-button">Telegram Kanalımıza Katıl</a>
+        <div id="live-user-count">Aktif Kullanıcı: <span id="user-count">0</span></div>
+
+        <a href="https://t.me/boxsportsx" target="_blank" class="telegram-button">Telegram Kanalımıza Katıl ✈️</a>
     </div>
 
     <script>
+        const m3uSelect = document.getElementById('m3u-select');
+        const loadButton = document.getElementById('load-button');
+        const videoPlayer = document.getElementById('video-player');
+        const modeToggle = document.getElementById('mode-toggle');
+        const body = document.body;
+        const userCountElement = document.getElementById('user-count');
+
         // F12 ve sağ tık menüsünü engelleme
         document.addEventListener('keydown', function(event) {
             if (event.key === 'F12' || (event.ctrlKey && event.shiftKey && event.key === 'I')) {
@@ -275,12 +317,6 @@
         document.addEventListener('contextmenu', function(event) {
             event.preventDefault();
         });
-
-        const m3uSelect = document.getElementById('m3u-select');
-        const loadButton = document.getElementById('load-button');
-        const videoPlayer = document.getElementById('video-player');
-        const modeToggle = document.getElementById('mode-toggle');
-        const body = document.body;
 
         // Tema ayarını kaydetme ve yükleme
         const savedTheme = localStorage.getItem('theme');
@@ -300,15 +336,21 @@
             }
         });
 
+        let hlsInstance = null;
+
         // Oynatıcı işlevi
         loadButton.addEventListener('click', () => {
             const m3uUrl = m3uSelect.value;
             if (m3uUrl) {
+                if (hlsInstance) {
+                    hlsInstance.destroy();
+                }
+
                 if (Hls.isSupported()) {
-                    const hls = new Hls();
-                    hls.loadSource(m3uUrl);
-                    hls.attachMedia(videoPlayer);
-                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    hlsInstance = new Hls();
+                    hlsInstance.loadSource(m3uUrl);
+                    hlsInstance.attachMedia(videoPlayer);
+                    hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
                         videoPlayer.play();
                     });
                 } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
@@ -319,9 +361,79 @@
                 } else {
                     alert('Tarayıcınız bu formatı desteklemiyor.');
                 }
+                
+                // Oynatıldığında kullanıcı aktivitesini gönder
+                sendUserActivity('play', m3uUrl);
             }
         });
-    </script>
 
+        // Backend bağlantısı ve kullanıcı takibi
+        const backendUrl = 'http://localhost:3000/api';
+        let userIp = '0.0.0.0';
+
+        // IP adresini al
+        async function getIpAddress() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                userIp = data.ip;
+            } catch (error) {
+                console.error('IP adresi alınırken hata oluştu:', error);
+            }
+        }
+
+        // Kullanıcı aktivitesini backend'e gönder
+        async function sendUserActivity(action, streamUrl = '') {
+            if (userIp === '0.0.0.0') {
+                await getIpAddress(); // IP alınmadıysa önce al
+            }
+            
+            const payload = {
+                ip: userIp,
+                action: action,
+                stream: streamUrl,
+                timestamp: new Date().toISOString()
+            };
+            
+            try {
+                const response = await fetch(`${backendUrl}/activity`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                console.log('Aktivite gönderildi:', data);
+            } catch (error) {
+                console.error('Aktivite gönderilirken hata oluştu:', error);
+            }
+        }
+
+        // Gerçek zamanlı aktif kullanıcı sayısını al
+        async function getActiveUserCount() {
+            try {
+                const response = await fetch(`${backendUrl}/active-users`);
+                const data = await response.json();
+                userCountElement.textContent = data.count;
+            } catch (error) {
+                console.error('Kullanıcı sayısı alınırken hata oluştu:', error);
+                userCountElement.textContent = 'Hata';
+            }
+        }
+
+        // Sayfa yüklendiğinde ve her 10 saniyede bir aktif kullanıcı sayısını güncelle
+        document.addEventListener('DOMContentLoaded', () => {
+            getIpAddress(); // Sayfa yüklendiğinde IP'yi al
+            sendUserActivity('visit'); // Ziyaret aktivitesini gönder
+            getActiveUserCount();
+            setInterval(getActiveUserCount, 10000); // Her 10 saniyede bir günceller
+        });
+
+        // Kullanıcı sayfadan ayrıldığında aktivite gönder
+        window.addEventListener('beforeunload', () => {
+            sendUserActivity('leave');
+        });
+    </script>
 </body>
 </html>
