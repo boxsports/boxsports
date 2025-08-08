@@ -3,28 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Box Sports </title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Box Sports</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12"></script>
     <style>
         :root {
             --primary-color: #007BFF;
-            --secondary-color: #e9ecef;
+            --secondary-color: #f0f4f8;
             --background-color: #f8f9fa;
             --text-color: #212529;
             --card-bg: #ffffff;
             --input-bg: #f1f1f1;
-            --shadow-color: rgba(0, 0, 0, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.15);
+            --gradient-start: #007BFF;
+            --gradient-end: #0056b3;
         }
 
         body.dark-mode {
-            --primary-color: #0d47a1;
-            --secondary-color: #212121;
+            --primary-color: #3f51b5;
+            --secondary-color: #1a1a1a;
             --background-color: #121212;
             --text-color: #f5f5f5;
             --card-bg: #2c2c2c;
             --input-bg: #3a3a3c;
             --shadow-color: rgba(0, 0, 0, 0.4);
+            --gradient-start: #3f51b5;
+            --gradient-end: #1a237e;
         }
 
         * {
@@ -35,7 +39,7 @@
         }
 
         body {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: var(--background-color);
             color: var(--text-color);
             display: flex;
@@ -44,6 +48,7 @@
             min-height: 100vh;
             padding: 20px;
             overflow-x: hidden;
+            background-image: linear-gradient(135deg, var(--background-color) 0%, var(--secondary-color) 100%);
         }
 
         .container {
@@ -55,6 +60,21 @@
             padding: 40px;
             text-align: center;
             animation: fadeIn 1s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(0, 123, 255, 0.1);
+            border-radius: 50%;
+            animation: moveCircle 10s infinite alternate;
+            z-index: 0;
         }
 
         .header {
@@ -62,12 +82,45 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         .header h1 {
             color: var(--primary-color);
             font-size: 2.5rem;
             text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-weight: 700;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 1rem;
+            position: relative;
+        }
+        
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-color);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-menu a:hover::after {
+            transform: scaleX(1);
         }
 
         .theme-switch {
@@ -126,30 +179,16 @@
         input:checked + .slider:before {
             transform: translateX(22px);
         }
-
-        .live-status {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #dc3545;
-        }
-
-        .live-status .dot {
-            height: 12px;
-            width: 12px;
-            background-color: #dc3545;
-            border-radius: 50%;
-            margin-right: 10px;
-            animation: pulse 1.5s infinite;
+        
+        .main-content {
+            position: relative;
+            z-index: 1;
         }
 
         #m3u-select {
             width: 100%;
             padding: 15px;
-            margin-bottom: 20px;
+            margin: 20px 0;
             border: 2px solid var(--primary-color);
             border-radius: 10px;
             background-color: var(--input-bg);
@@ -165,7 +204,7 @@
         }
         
         body.dark-mode #m3u-select {
-            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%230d47a1%22%20d%3D%22M287%20164.2l-149%20149c-4.4%204.4-11.4%204.4-15.8%200l-149-149c-4.4-4.4-4.4-11.4%200-15.8l20.4-20.4c4.4-4.4%2011.4-4.4%2015.8%200l113.8%20113.8%20113.8-113.8c4.4-4.4%2011.4-4.4%2015.8%200l20.4%2020.4c4.4%204.4%204.4%2011.4%200%2015.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%233f51b5%22%20d%3D%22M287%20164.2l-149%20149c-4.4%204.4-11.4%204.4-15.8%200l-149-149c-4.4-4.4-4.4-11.4%200-15.8l20.4-20.4c4.4-4.4%2011.4-4.4%2015.8%200l113.8%20113.8%20113.8-113.8c4.4-4.4%2011.4-4.4%2015.8%200l20.4%2020.4c4.4%204.4%204.4%2011.4%200%2015.8z%22%2F%3E%3C%2Fsvg%3E');
         }
 
         #m3u-select:focus {
@@ -180,31 +219,30 @@
             font-size: 1.2rem;
             font-weight: 600;
             color: #ffffff;
-            background: var(--primary-color);
+            background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         #load-button:hover {
-            background-color: #0056b3;
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(90deg, var(--gradient-end) 0%, var(--gradient-start) 100%);
         }
 
         #player-container {
             width: 100%;
             height: 500px;
             margin-top: 30px;
-            background-color: var(--card-bg);
+            background-color: #000;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
 
         #video-player {
@@ -213,27 +251,22 @@
             background-color: black;
         }
 
-        #live-user-count {
-            margin-top: 20px;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
         .telegram-button {
             display: inline-block;
-            margin-top: 20px;
-            padding: 12px 25px;
+            margin-top: 30px;
+            padding: 12px 30px;
             background: #0088CC;
             color: #ffffff;
             font-weight: 600;
             text-decoration: none;
             border-radius: 50px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
         }
         
         .telegram-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 136, 204, 0.4);
         }
 
         @keyframes fadeIn {
@@ -241,19 +274,24 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
+        @keyframes moveCircle {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(20px, 30px); }
+            100% { transform: translate(0, 0); }
         }
 
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
+                gap: 15px;
             }
             .header h1 {
                 font-size: 2rem;
-                margin-bottom: 15px;
+            }
+            .nav-menu {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 15px;
             }
             .container {
                 padding: 20px;
@@ -268,7 +306,12 @@
 
     <div class="container">
         <div class="header">
-            <h1>Box Sports <span role="img" aria-label="trophy">🏆</span></h1>
+            <h1>Box Sports</h1>
+            <ul class="nav-menu">
+                <li><a href="#">Ana Sayfa</a></li>
+                <li><a href="#">Canlı Maçlar</a></li>
+                <li><a href="#">Program</a></li>
+            </ul>
             <div class="theme-switch" id="theme-toggle">
                 <span class="switch-icon">🌙</span>
                 <label class="switch">
@@ -279,24 +322,21 @@
             </div>
         </div>
         
-        <div class="live-status">
-            <span class="dot"></span>
-            <span>CANLI YAYIN</span>
-        </div>
-        
-        <select id="m3u-select">
-            <option value="">Bir maç seçin...</option>
-            <option value="https://hlssssss.sabunyagiz.workers.dev/https://corestream.corestream.lat/hls/s-sport.m3u8">ST PATRİCKS - BEŞİKTAŞ Maçı</option>
-        </select>
-        
-        <button id="load-button">Oynat</button>
-        <div id="player-container">
-            <video id="video-player" controls></video>
+        <div class="main-content">
+            <select id="m3u-select">
+                <option value="">Bir maç seçin...</option>
+                <option value="https://hlssssss.sabunyagiz.workers.dev/https://corestream.corestream.lat/hls/s-sport.m3u8">ST PATRİCKS - BEŞİKTAŞ Maçı</option>
+                <option value="https://hlssssss.sabunyagiz.workers.dev/https://corestream.corestream.lat/hls/bein-sports-1.m3u8">GAZİANTEP - GALATASARAY Maçı</option>
+                <option value="https://hlssssss.sabunyagiz.workers.dev/https://corestream.corestream.lat/hls/bein-sports-2.m3u8">ÜMRANİYE - MANİSA Maçı</option>
+            </select>
+            
+            <button id="load-button">Oynat</button>
+            <div id="player-container">
+                <video id="video-player" controls></video>
+            </div>
         </div>
 
-        <div id="live-user-count">Aktif Kullanıcı: <span id="user-count">0</span></div>
-
-        <a href="https://t.me/boxsportsx" target="_blank" class="telegram-button">Telegram Kanalımıza Katıl ✈️</a>
+        <a href="https://t.me/boxsportsx" target="_blank" class="telegram-button">Telegram Kanalımıza Katılın</a>
     </div>
 
     <script>
@@ -305,7 +345,6 @@
         const videoPlayer = document.getElementById('video-player');
         const modeToggle = document.getElementById('mode-toggle');
         const body = document.body;
-        const userCountElement = document.getElementById('user-count');
 
         // F12 ve sağ tık menüsünü engelleme
         document.addEventListener('keydown', function(event) {
@@ -361,78 +400,9 @@
                 } else {
                     alert('Tarayıcınız bu formatı desteklemiyor.');
                 }
-                
-                // Oynatıldığında kullanıcı aktivitesini gönder
-                sendUserActivity('play', m3uUrl);
+            } else {
+                alert('Lütfen bir maç seçin.');
             }
-        });
-
-        // Backend bağlantısı ve kullanıcı takibi
-        const backendUrl = 'http://localhost:3000/api';
-        let userIp = '0.0.0.0';
-
-        // IP adresini al
-        async function getIpAddress() {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                userIp = data.ip;
-            } catch (error) {
-                console.error('IP adresi alınırken hata oluştu:', error);
-            }
-        }
-
-        // Kullanıcı aktivitesini backend'e gönder
-        async function sendUserActivity(action, streamUrl = '') {
-            if (userIp === '0.0.0.0') {
-                await getIpAddress(); // IP alınmadıysa önce al
-            }
-            
-            const payload = {
-                ip: userIp,
-                action: action,
-                stream: streamUrl,
-                timestamp: new Date().toISOString()
-            };
-            
-            try {
-                const response = await fetch(`${backendUrl}/activity`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-                const data = await response.json();
-                console.log('Aktivite gönderildi:', data);
-            } catch (error) {
-                console.error('Aktivite gönderilirken hata oluştu:', error);
-            }
-        }
-
-        // Gerçek zamanlı aktif kullanıcı sayısını al
-        async function getActiveUserCount() {
-            try {
-                const response = await fetch(`${backendUrl}/active-users`);
-                const data = await response.json();
-                userCountElement.textContent = data.count;
-            } catch (error) {
-                console.error('Kullanıcı sayısı alınırken hata oluştu:', error);
-                userCountElement.textContent = 'Hata';
-            }
-        }
-
-        // Sayfa yüklendiğinde ve her 10 saniyede bir aktif kullanıcı sayısını güncelle
-        document.addEventListener('DOMContentLoaded', () => {
-            getIpAddress(); // Sayfa yüklendiğinde IP'yi al
-            sendUserActivity('visit'); // Ziyaret aktivitesini gönder
-            getActiveUserCount();
-            setInterval(getActiveUserCount, 10000); // Her 10 saniyede bir günceller
-        });
-
-        // Kullanıcı sayfadan ayrıldığında aktivite gönder
-        window.addEventListener('beforeunload', () => {
-            sendUserActivity('leave');
         });
     </script>
 </body>
