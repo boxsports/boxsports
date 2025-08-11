@@ -1,443 +1,443 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Box Sports</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12"></script>
-    <style>
-        :root {
-            --primary-color: #007BFF;
-            --secondary-color: #f0f4f8;
-            --background-color: #f8f9fa;
-            --text-color: #212529;
-            --card-bg: rgba(255, 255, 255, 0.4);
-            --input-bg: rgba(255, 255, 255, 0.6);
-            --shadow-color: rgba(0, 0, 0, 0.15);
-            --gradient-start: #0056b3;
-            --gradient-end: #002D62;
-            --frosted-glass: rgba(255, 255, 255, 0.2);
-            --frosted-glass-border: rgba(255, 255, 255, 0.3);
-        }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Box Sports </title>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<style>
+  :root{
+    --bg:#0f1b5a;
+    --panel:#17265a;
+    --accent:#1e4bd8;
+    --muted:#a9c0ff;
+    --card:#1f2e66;
+    --live:#25c16f;
+    --decl:#ff6b6b;
+    --glass: rgba(255,255,255,0.03);
+    --shadow: 0 6px 18px rgba(3,9,33,0.6);
+    --radius:12px;
+    color-scheme: dark;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  [data-theme="light"]{
+    --bg:#e9f0ff;
+    --panel:#ffffff;
+    --accent:#0b57d0;
+    --muted:#355089;
+    --card:#f4f8ff;
+    --live:#059669;
+    --decl:#dc2626;
+    --glass: rgba(0,0,0,0.03);
+    --shadow: 0 8px 24px rgba(15,23,42,0.06);
+    color-scheme: light;
+  }
 
-        body.dark-mode {
-            --primary-color: #4a90e2;
-            --secondary-color: #1a1a1a;
-            --background-color: #121212;
-            --text-color: #e0e0e0;
-            --card-bg: rgba(44, 44, 44, 0.6);
-            --input-bg: rgba(58, 58, 60, 0.7);
-            --shadow-color: rgba(0, 0, 0, 0.6);
-            --gradient-start: #1a237e;
-            --gradient-end: #0d1a49;
-            --frosted-glass: rgba(255, 255, 255, 0.1);
-            --frosted-glass-border: rgba(255, 255, 255, 0.2);
-        }
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg), #0b1a4a 80%);font-size:15px}
+  .app{
+    display:grid;
+    grid-template-rows:64px 1fr;
+    gap:18px;
+    height:100vh;
+    padding:18px;
+    box-sizing:border-box;
+  }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
-        }
+  /* Header */
+  header.app-header{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;padding:10px 18px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
+    box-shadow:var(--shadow);
+    color:var(--muted);
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:46px;height:46px;background:var(--accent);border-radius:8px;display:grid;place-items:center;font-weight:700;color:#fff;
+    box-shadow:0 4px 12px rgba(9,30,92,0.35);
+    transform:translateY(-1px);
+  }
+  .brand h1{margin:0;font-size:20px;color:var(--muted)}
+  .controls{display:flex;align-items:center;gap:12px}
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
-        }
+  .user-badge{background:var(--card);padding:8px 10px;border-radius:8px;color:var(--muted);display:flex;gap:10px;align-items:center}
+  .theme-toggle{cursor:pointer;padding:6px;border-radius:8px;background:var(--glass);border:1px solid rgba(255,255,255,0.03)}
+  .active-users{color:var(--muted);font-size:13px}
 
-        .container {
-            width: 100%;
-            max-width: 900px;
-            background-color: var(--card-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid var(--frosted-glass-border);
-            box-shadow: 0 8px 32px var(--shadow-color);
-            padding: 40px;
-            text-align: center;
-            animation: fadeIn 1s ease-in-out;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-        
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -20%;
-            left: -20%;
-            width: 60%;
-            height: 60%;
-            background: var(--primary-color);
-            opacity: 0.1;
-            border-radius: 50%;
-            animation: moveShape1 15s infinite alternate;
-            z-index: -1;
-        }
-        
-        .container::after {
-            content: '';
-            position: absolute;
-            bottom: -20%;
-            right: -20%;
-            width: 70%;
-            height: 70%;
-            background: var(--primary-color);
-            opacity: 0.08;
-            border-radius: 50%;
-            animation: moveShape2 18s infinite alternate;
-            z-index: -1;
-        }
+  /* Layout */
+  .main{display:grid;grid-template-columns:320px 1fr;gap:18px;height:calc(100vh - 100px)}
+  @media (max-width:900px){ .main{grid-template-columns:1fr;grid-auto-rows:minmax(240px,auto)} .left{order:2} .right{order:1} }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
+  /* Left panel */
+  .left{
+    background:var(--panel);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;
+  }
+  .panel-title{font-weight:700;color:var(--muted);font-size:16px}
+  .notice{
+    background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    padding:14px;border-radius:10px;color:var(--muted);font-size:14px;line-height:1.4;
+  }
+  .controls-row{display:flex;gap:8px;align-items:center}
+  .btn{
+    background:var(--accent);border:none;color:white;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;
+    box-shadow:0 6px 14px rgba(14,47,132,0.35);
+  }
+  .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);box-shadow:none}
+  .filter{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .search{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--muted)}
 
-        .header h1 {
-            color: #ffffff;
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-        }
-        
-        .nav-menu {
-            list-style: none;
-            display: flex;
-            gap: 25px;
-        }
-        
-        .nav-menu a {
-            text-decoration: none;
-            color: #ffffff;
-            font-weight: 600;
-            font-size: 1rem;
-            position: relative;
-            transition: color 0.3s ease;
-        }
-        
-        .nav-menu a::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: -5px;
-            width: 100%;
-            height: 2px;
-            background: var(--primary-color);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-        
-        .nav-menu a:hover {
-            color: var(--primary-color);
-        }
-        
-        .nav-menu a:hover::after {
-            transform: scaleX(1);
-        }
+  .matches{overflow:auto;padding-right:6px;display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .match{
+    display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:var(--card);cursor:pointer;border:1px solid rgba(255,255,255,0.02);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .match:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(3,9,33,0.45)}
+  .match .meta{flex:1}
+  .match .teams{font-weight:700;color:var(--muted)}
+  .match .info{font-size:13px;color:var(--muted);opacity:0.8}
+  .badge{padding:6px 8px;border-radius:8px;font-weight:700;font-size:13px}
+  .live{background:linear-gradient(90deg,var(--live), #14a86b);color:#052113}
+  .soon{background:linear-gradient(90deg,#ffd166,#ffb703);color:#2b1600}
+  .dead{background:var(--decl);color:#fff}
 
-        .theme-switch {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
+  /* Right - player */
+  .right {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    border-radius: var(--radius);
+    padding: 12px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: calc(100vh - 100px);
+  }
 
-        .switch-icon {
-            font-size: 1.5rem;
-            margin: 0 5px;
-            color: var(--primary-color);
-            filter: drop-shadow(0 0 5px rgba(0, 123, 255, 0.3));
-        }
-        
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 28px;
-        }
+  .player-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.35));
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+  }
 
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+  .player {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: 6px;
+    display: grid;
+    place-items: center;
+    color: #fff;
+  }
 
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(255, 255, 255, 0.3);
-            transition: 0.4s;
-            border-radius: 28px;
-        }
+  .player video, .player iframe {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+    max-height: none;
+  }
 
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: 0.4s;
-            border-radius: 50%;
-        }
+  .player-overlay {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    display: none; /* Oynat butonu gizlendi */
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
 
-        input:checked + .slider {
-            background-color: var(--primary-color);
-        }
+  .info-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .stream-title{font-weight:800;color:var(--muted);font-size:18px}
+  .meta-right{color:var(--muted);font-size:13px}
 
-        input:checked + .slider:before {
-            transform: translateX(22px);
-        }
-        
-        .main-content {
-            position: relative;
-            z-index: 1;
-        }
+  /* empty state */
+  .empty{
+    display:grid;place-items:center;color:var(--muted);opacity:0.9;padding:20px;text-align:center;
+  }
 
-        #m3u-select {
-            width: 100%;
-            padding: 15px;
-            margin: 20px 0;
-            border: 1px solid var(--frosted-glass-border);
-            border-radius: 10px;
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            font-size: 1rem;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007BFF%22%20d%3D%22M287%20164.2l-149%20149c-4.4%204.4-11.4%204.4-15.8%200l-149-149c-4.4-4.4-4.4-11.4%200-15.8l20.4-20.4c4.4-4.4%2011.4-4.4%2015.8%200l113.8%20113.8%20113.8-113.8c4.4-4.4%2011.4-4.4%2015.8%200l20.4%2020.4c4.4%204.4%204.4%2011.4%200%2015.8z%22%2F%3E%3C%2Fsvg%3E');
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 12px auto;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            font-weight: 500;
-        }
+  footer.hint{color:var(--muted);font-size:13px;text-align:center;padding-top:6px}
+  /* nice scrollbar */
+  .matches::-webkit-scrollbar{width:8px}
+  .matches::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.04);border-radius:8px}
 
-        #m3u-select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
-        }
-
-        #load-button {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #ffffff;
-            background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        #load-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(90deg, var(--gradient-end) 0%, var(--gradient-start) 100%);
-        }
-
-        #player-container {
-            width: 100%;
-            height: 500px;
-            margin-top: 30px;
-            background-color: #000;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
-            position: relative;
-        }
-
-        #video-player {
-            width: 100%;
-            height: 100%;
-            background-color: black;
-        }
-
-        .telegram-button {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 12px 30px;
-            background: #0088CC;
-            color: #ffffff;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: 50px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
-        }
-        
-        .telegram-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 136, 204, 0.4);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes moveShape1 {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(30px, 40px) scale(1.1); }
-            100% { transform: translate(0, 0) scale(1); }
-        }
-        
-        @keyframes moveShape2 {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-20px, -30px) scale(1.2); }
-            100% { transform: translate(0, 0) scale(1); }
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 15px;
-                margin-bottom: 20px;
-            }
-            .header h1 {
-                font-size: 2rem;
-            }
-            .nav-menu {
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 15px;
-            }
-            .container {
-                padding: 20px;
-            }
-            #player-container {
-                height: 300px;
-            }
-            .telegram-button {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+</style>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
-
-    <div class="container">
-        <div class="header">
-            <h1>Box Sports</h1>
-            <ul class="nav-menu">
-                <li><a href="#">Ana Sayfa</a></li>
-                <li><a href="#">Canlı Maçlar</a></li>
-                <li><a href="#">Program</a></li>
-            </ul>
-            <div class="theme-switch" id="theme-toggle">
-                <span class="switch-icon">🌙</span>
-                <label class="switch">
-                    <input type="checkbox" id="mode-toggle">
-                    <span class="slider"></span>
-                </label>
-                <span class="switch-icon">☀️</span>
-            </div>
-        </div>
-        
-        <div class="main-content">
-            <select id="m3u-select">
-                <option value="">Bir maç seçin...</option>
-                <option value="https://hlssssss.yagizsabunlar.workers.dev/https://corestream.corestream.lat//hls/bein-sports-1.m3u8">ANTALYA KASIMPAŞA</option>
-            </select>
-            
-            <button id="load-button">Oynat</button>
-            <div id="player-container">
-                <video id="video-player" controls></video>
-            </div>
-        </div>
-
-        <a href="https://t.me/boxsportsx" target="_blank" class="telegram-button">Telegram Kanalımıza Katılın</a>
+<div class="app" id="app" data-theme="dark">
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo">BOX SPORTS</div>
+      <div>
+        <h1>Box Sports</h1>
+        <div style="font-size:12px;color:var(--muted)">Canlı spor yayınları</div>
+      </div>
     </div>
 
-    <script>
-        const m3uSelect = document.getElementById('m3u-select');
-        const loadButton = document.getElementById('load-button');
-        const videoPlayer = document.getElementById('video-player');
-        const modeToggle = document.getElementById('mode-toggle');
-        const body = document.body;
+    <div class="controls">
+      <div class="active-users">Aktif Kullanıcı: <strong id="activeCount">1</strong></div>
+      <div class="user-badge">
+        <div style="width:28px;height:28px;border-radius:6px;background:var(--accent);display:grid;place-items:center;color:#fff;font-weight:700">E</div>
+        <div style="font-size:13px;color:var(--muted)">BOX SPORTS</div>
+      </div>
+      <div class="theme-toggle" id="themeToggle" title="Gece / Gündüz">🌞</div>
+    </div>
+  </header>
 
-        // F12 ve sağ tık menüsünü engelleme
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'F12' || (event.ctrlKey && event.shiftKey && event.key === 'I')) {
-                event.preventDefault();
-            }
+  <div class="main">
+    <aside class="left">
+      <div class="panel-title">Canlı Maçlar</div>
+
+      <div class="notice" id="notice">
+        Dosya okuma hatası! Bir sorun olursa <strong>@hatalisin</strong> telegram
+      </div>
+
+      <div class="controls-row">
+        <button class="btn" id="refreshBtn">Yenile</button>
+        <button class="btn secondary" id="onlyLiveBtn">Sadece LIVE</button>
+        <input class="search" id="searchInput" placeholder="Takım ara..." />
+      </div>
+
+      <div class="matches" id="matchesList">
+        <!-- maçlar buraya eklenecek -->
+      </div>
+
+      <footer class="hint">Tıklayınca oynatıcıya yüklenir. Live olanlara renkli rozet.</footer>
+
+      <div style="margin-top:15px; font-size:14px; text-align:center; color:var(--muted);">
+        Telegram kanalımıza katılın: <a href="https://t.me/boxsportsx" target="_blank" style="color:var(--accent); font-weight:bold;">https://t.me/boxsportsx</a>
+      </div>
+
+    </aside>
+
+    <section class="right">
+      <div class="info-row">
+        <div class="stream-title" id="streamTitle">BEIN SPORTS</div>
+        <div class="meta-right" id="streamMeta">Durum: —</div>
+      </div>
+
+      <div class="player-wrap">
+        <div class="player" id="player">
+          <div class="empty" id="emptyState">
+            <div>
+              <div style="font-size:20px;font-weight:700;margin-bottom:8px">Seçili bir yayın yok</div>
+              <div style="color:var(--muted)">Soldan bir maç seçin veya "Yenile"ye tıklayın</div>
+            </div>
+          </div>
+          <!-- video / iframe placeholder -->
+          <video id="videoEl" controls autoplay style="display:none"></video>
+        </div>
+        <div class="player-overlay">
+          <button class="play-btn" id="bigPlayBtn" style="display:none">► Oynat</button>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="flex:1;color:var(--muted)">Son işlem süresi: <span id="lastTime">—</span></div>
+        <div><button class="btn secondary" id="stopBtn">Durdur</button></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<audio id="ding" src="data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAAAA..." preload="auto"></audio>
+
+<script>
+  // Maçlar örnek verisi
+  const MOCK_MATCHES = [
+    {
+      id: 1,
+      teams: "TRABZONSPOR  vs KOCAELİ",
+      time: "CANLI",
+      status: "live",
+      src: "https://hlssssssssss.ssssssssssssssssssssss.workers.dev/https://corestream.corestream.lat/hls/bein-sports-1.m3u8"
+    }
+  ];
+
+  const matchesEl = document.getElementById('matchesList');
+  const notice = document.getElementById('notice');
+  const lastTime = document.getElementById('lastTime');
+  const streamTitle = document.getElementById('streamTitle');
+  const streamMeta = document.getElementById('streamMeta');
+  const videoEl = document.getElementById('videoEl');
+  const emptyState = document.getElementById('emptyState');
+  const bigPlayBtn = document.getElementById('bigPlayBtn');
+  const ding = document.getElementById('ding');
+
+  // Sağı tık ve geliştirici araç engelle
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if (e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
+        (e.ctrlKey && e.key === 'U')) {
+      e.preventDefault();
+      alert('Geliştirici araçları engellendi.');
+    }
+  });
+
+  // Ses efekti oynatma fonksiyonu
+  function tryPlayDing() {
+    if (!ding) return;
+    ding.currentTime = 0;
+    ding.play().catch(() => { });
+  }
+
+  // Maç listesini renderla
+  function renderMatches(filter = '') {
+    matchesEl.innerHTML = '';
+    const onlyLive = document.getElementById('onlyLiveBtn').classList.contains('active');
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+
+    const list = MOCK_MATCHES.filter(m => {
+      if (onlyLive && m.status !== 'live') return false;
+      if (q && !m.teams.toLowerCase().includes(q)) return false;
+      return true;
+    });
+
+    if (list.length === 0) {
+      matchesEl.innerHTML = '<div class="empty">Görüntülenecek maç yok.</div>';
+      return;
+    }
+
+    for (const m of list) {
+      const item = document.createElement('div');
+      item.className = 'match';
+      item.dataset.id = m.id;
+      item.innerHTML = `
+        <div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(180deg,#10183d, #18307a);display:grid;place-items:center;color:#fff;font-weight:700">
+          ${m.id}
+        </div>
+        <div class="meta">
+          <div class="teams">${escapeHtml(m.teams)}</div>
+          <div class="info">${escapeHtml(m.time)} • ${m.status.toUpperCase()}</div>
+        </div>
+        <div>
+          <div class="badge ${m.status === 'live' ? 'live' : (m.status === 'soon' ? 'soon' : 'dead')}">${m.status === 'live' ? 'LIVE' : (m.status === 'soon' ? 'SOON' : 'KAPANDI')}</div>
+        </div>
+      `;
+      item.addEventListener('click', () => selectMatch(m));
+      matchesEl.appendChild(item);
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  // Maç seçildiğinde
+  function selectMatch(m) {
+    console.log('Seçilen maç:', m);
+    notice.style.display = 'none';
+    streamTitle.textContent = m.teams;
+    streamMeta.textContent = 'Durum: ' + m.status.toUpperCase();
+
+    if (!m.src) {
+      emptyState.style.display = 'grid';
+      videoEl.style.display = 'none';
+      bigPlayBtn.style.display = 'none';
+      return;
+    }
+
+    emptyState.style.display = 'none';
+    videoEl.style.display = 'block';
+
+    if (window.hls) {
+      window.hls.destroy();
+      window.hls = null;
+    }
+
+    if (m.src.endsWith('.m3u8')) {
+      if (Hls.isSupported()) {
+        window.hls = new Hls();
+        window.hls.loadSource(m.src);
+        window.hls.attachMedia(videoEl);
+        window.hls.on(Hls.Events.MANIFEST_PARSED, function () {
+          videoEl.play().catch(() => { });
         });
+      } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+        videoEl.src = m.src;
+        videoEl.play().catch(() => { });
+      } else {
+        alert('Tarayıcınız HLS video oynatmayı desteklemiyor.');
+        return;
+      }
+    } else {
+      videoEl.src = m.src;
+      videoEl.play().catch(() => { });
+    }
 
-        document.addEventListener('contextmenu', function(event) {
-            event.preventDefault();
-        });
+    // Oynat butonu gizlendi, otomatik oynatma var
+    bigPlayBtn.style.display = 'none';
 
-        // Tema ayarını kaydetme ve yükleme
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            body.classList.add('dark-mode');
-            modeToggle.checked = true;
-        }
+    if (m.status === 'live') {
+      tryPlayDing();
+    }
 
-        // Tema değiştirme işlevi
-        modeToggle.addEventListener('change', () => {
-            if (modeToggle.checked) {
-                body.classList.add('dark-mode');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                body.classList.remove('dark-mode');
-                localStorage.setItem('theme', 'light');
-            }
-        });
+    lastTime.textContent = new Date().toLocaleTimeString();
+  }
 
-        let hlsInstance = null;
+  // Maç listesini yükle
+  function loadMatches() {
+    try {
+      renderMatches();
+      notice.style.display = 'none';
+    } catch (e) {
+      notice.style.display = 'block';
+      notice.textContent = 'Dosya okuma hatası! Bir sorun olursa @hatalisin telegram.';
+    }
+  }
 
-        // Oynatıcı işlevi
-        loadButton.addEventListener('click', () => {
-            const m3uUrl = m3uSelect.value;
-            if (m3uUrl) {
-                if (hlsInstance) {
-                    hlsInstance.destroy();
-                }
+  // Sadece canlı filtre düğmesi
+  document.getElementById('onlyLiveBtn').addEventListener('click', e => {
+    e.target.classList.toggle('active');
+    renderMatches();
+  });
 
-                if (Hls.isSupported()) {
-                    hlsInstance = new Hls();
-                    hlsInstance.loadSource(m3uUrl);
-                    hlsInstance.attachMedia(videoPlayer);
-                    hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
-                        videoPlayer.play();
-                    });
-                } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
-                    videoPlayer.src = m3uUrl;
-                    videoPlayer.addEventListener('loadedmetadata', function() {
-                        videoPlayer.play();
-                    });
-                } else {
-                    alert('Tarayıcınız bu formatı desteklemiyor.');
-                }
-            } else {
-                alert('Lütfen bir maç seçin.');
-            }
-        });
-    </script>
+  // Arama inputu
+  document.getElementById('searchInput').addEventListener('input', e => {
+    renderMatches();
+  });
+
+  // Yenile butonu
+  document.getElementById('refreshBtn').addEventListener('click', e => {
+    loadMatches();
+  });
+
+  // Durdur butonu
+  document.getElementById('stopBtn').addEventListener('click', e => {
+    if (window.hls) {
+      window.hls.destroy();
+      window.hls = null;
+    }
+    videoEl.pause();
+    videoEl.removeAttribute('src');
+    videoEl.load();
+    emptyState.style.display = 'grid';
+    bigPlayBtn.style.display = 'none';
+    streamTitle.textContent = 'BEIN SPORTS';
+    streamMeta.textContent = 'Durum: —';
+  });
+
+  // Tema toggle
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', e => {
+    const app = document.getElementById('app');
+    if (app.dataset.theme === 'dark') {
+      app.dataset.theme = 'light';
+      themeToggle.textContent = '🌙';
+    } else {
+      app.dataset.theme = 'dark';
+      themeToggle.textContent = '🌞';
+    }
+  });
+
+  // İlk yükleme
+  loadMatches();
+
+</script>
 </body>
 </html>
